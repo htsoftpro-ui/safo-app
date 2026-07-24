@@ -9,11 +9,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Add 'returned' to the status enum
-        DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending','confirmed','processing','ready','shipped','delivered','cancelled','returned') DEFAULT 'pending'");
+        $driver = DB::getDriverName();
+
+        if ($driver === 'mysql') {
+            // MySQL: add 'returned' to the existing ENUM
+            DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending','confirmed','processing','ready','shipped','delivered','cancelled','returned') DEFAULT 'pending'");
+        }
+        // SQLite: the 'returned' value was already included in the CREATE TABLE (migration 0007)
 
         Schema::table('orders', function (Blueprint $table) {
-            $table->timestamp('returned_at')->nullable()->after('delivered_at');
+            if (!Schema::hasColumn('orders', 'returned_at')) {
+                $table->timestamp('returned_at')->nullable()->after('delivered_at');
+            }
         });
     }
 
@@ -23,6 +30,8 @@ return new class extends Migration
             $table->dropColumn('returned_at');
         });
 
-        DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending','confirmed','processing','ready','shipped','delivered','cancelled') DEFAULT 'pending'");
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE orders MODIFY COLUMN status ENUM('pending','confirmed','processing','ready','shipped','delivered','cancelled') DEFAULT 'pending'");
+        }
     }
 };

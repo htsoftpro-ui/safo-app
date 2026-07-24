@@ -3,19 +3,14 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 
-/**
- * Profile controller — manage user profile, avatar, password, account deletion.
- */
 class ProfileController extends Controller
 {
-    /**
-     * Show user profile.
-     */
     public function show(Request $request)
     {
         $user = $request->user()->load('addresses');
@@ -26,20 +21,9 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Update profile information.
-     */
-    public function update(Request $request)
+    public function update(UpdateProfileRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'email' => 'nullable|email|unique:users,email,' . $request->user()->id,
-            'city' => 'nullable|string|max:100',
-            'area' => 'nullable|string|max:100',
-            'address' => 'nullable|string|max:500',
-        ]);
-
-        $request->user()->update($validated);
+        $request->user()->update($request->validated());
 
         return response()->json([
             'success' => true,
@@ -48,9 +32,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Upload/change avatar.
-     */
     public function avatar(Request $request)
     {
         $request->validate([
@@ -59,48 +40,39 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        // Delete old avatar if exists
         if ($user->avatar) {
             $oldPath = str_replace('/storage/', '', $user->avatar);
             \Storage::disk('public')->delete($oldPath);
         }
 
         $path = $request->file('avatar')->store('avatars', 'public');
-
         $user->update(['avatar' => '/storage/' . $path]);
 
         return response()->json([
             'success' => true,
             'message' => 'تم تحديث الصورة',
-            'data' => [
-                'avatar' => $user->fresh()->avatar,
-            ],
+            'data' => ['avatar' => $user->fresh()->avatar],
         ]);
     }
 
-    /**
-     * Change password.
-     */
-    public function changePassword(Request $request)
+    public function changePassword(ChangePasswordRequest $request)
     {
-        $validated = $request->validate([
-            'current_password' => 'required|string',
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
-        ]);
-
         $user = $request->user();
 
-        if (!Hash::check($validated['current_password'], $user->password)) {
+        if (!Hash::check($request->current_password, $user->password)) {
             return response()->json([
                 'success' => false,
                 'message' => 'كلمة المرور الحالية غير صحيحة',
             ], 422);
         }
 
-        $user->update(['password' => $validated['password']]);
+        $user->update(['password' => $request->password]);
 
         // Revoke all other tokens (security best practice)
-        $user->tokens()->where('id', '!=', $user->currentAccessToken()->id)->delete();
+        $accessToken = $user->currentAccessToken();
+        if ($accessToken && method_exists($accessToken, 'delete')) {
+            $user->tokens()->where('id', '!=', $accessToken->id)->delete();
+        }
 
         return response()->json([
             'success' => true,
@@ -108,15 +80,9 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Delete account (soft delete) with password confirmation.
-     */
     public function destroy(Request $request)
     {
-        $request->validate([
-            'password' => 'required|string',
-        ]);
-
+        $request->validate(['password' => 'required|string']);
         $user = $request->user();
 
         if (!Hash::check($request->password, $user->password)) {
@@ -126,10 +92,7 @@ class ProfileController extends Controller
             ], 422);
         }
 
-        // Revoke all tokens
         $user->tokens()->delete();
-
-        // Soft delete
         $user->delete();
 
         return response()->json([

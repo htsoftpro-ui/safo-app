@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\OrderStatusHistory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -51,7 +52,7 @@ class OrderService
 
         $supplierId = $cartItems->first()->supplier_id;
 
-        return DB::transaction(function () use ($user, $address, $paymentMethod, $cartItems, $supplierId) {
+        return DB::transaction(function () use ($user, $address, $paymentMethod, $couponCode, $cartItems, $supplierId) {
             // 1. Validate stock (inside transaction — prevents race conditions)
             foreach ($cartItems as $item) {
                 $product = Product::where('id', $item->product_id)

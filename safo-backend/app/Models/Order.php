@@ -230,16 +230,23 @@ class Order extends Model
     {
         $date = now()->format('Ymd');
 
-        // Atomic increment — safe under concurrent requests
-        DB::table('order_sequences')->upsert(
-            ['date' => $date, 'counter' => 0],
-            ['date'],
-            ['counter' => DB::raw('counter + 1')]
-        );
-
-        $sequence = DB::table('order_sequences')
+        // Atomic increment — works on both MySQL and SQLite
+        $affected = DB::table('order_sequences')
             ->where('date', $date)
-            ->value('counter');
+            ->increment('counter');
+
+        if ($affected === 0) {
+            // First order of the day
+            DB::table('order_sequences')->insert([
+                'date' => $date,
+                'counter' => 1,
+            ]);
+            $sequence = 1;
+        } else {
+            $sequence = DB::table('order_sequences')
+                ->where('date', $date)
+                ->value('counter');
+        }
 
         return "ORD-{$date}-" . str_pad($sequence, 3, '0', STR_PAD_LEFT);
     }

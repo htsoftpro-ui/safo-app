@@ -5,12 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-/**
- * Role-based access control middleware.
- *
- * Usage: ->middleware('role:supplier')
- *        ->middleware('role:customer,supplier')
- */
 class CheckRole
 {
     public function handle(Request $request, Closure $next, ...$roles)

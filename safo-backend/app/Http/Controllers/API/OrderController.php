@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Address;
 use App\Models\Order;
@@ -17,29 +18,19 @@ class OrderController extends Controller
         private NotificationService $notificationService,
     ) {}
 
-    /**
-     * Create order from cart.
-     */
-    public function store(Request $request)
+    public function store(StoreOrderRequest $request)
     {
-        $validated = $request->validate([
-            'address_id' => 'required|exists:addresses,id',
-            'payment_method' => 'required|in:cash,credit,wallet',
-            'coupon_code' => 'nullable|string',
-        ]);
-
         $address = Address::where('user_id', $request->user()->id)
-            ->findOrFail($validated['address_id']);
+            ->findOrFail($request->address_id);
 
         try {
             $order = $this->orderService->createOrder(
                 $request->user(),
                 $address,
-                $validated['payment_method'],
-                $validated['coupon_code'] ?? null,
+                $request->payment_method,
+                $request->coupon_code ?? null,
             );
 
-            // Notifications (after successful creation)
             $this->notificationService->notifyOrderCreated($order);
             $this->notificationService->notifySupplierNewOrder($order);
 
@@ -48,7 +39,6 @@ class OrderController extends Controller
                 'message' => 'تم إنشاء الطلب بنجاح',
                 'data' => new OrderResource($order),
             ], 201);
-
         } catch (\App\Exceptions\OrderCreationException $e) {
             return response()->json([
                 'success' => false,
@@ -57,9 +47,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * List user's orders.
-     */
     public function index(Request $request)
     {
         $orders = Order::with(['items', 'supplier'])
@@ -71,41 +58,24 @@ class OrderController extends Controller
         return OrderResource::collection($orders);
     }
 
-    /**
-     * Show single order.
-     */
     public function show(Request $request, Order $order)
     {
-        // Authorization: user can only see their own orders
-        if ($order->user_id !== $request->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'غير مصرح',
-            ], 403);
-        }
-
+        $this->authorize('view', $order);
         $order->load(['items', 'supplier', 'statusHistory.changedBy']);
 
         return new OrderResource($order);
     }
 
-    /**
-     * Cancel order.
-     */
     public function cancel(Request $request, Order $order)
     {
-        if ($order->user_id !== $request->user()->id) {
-            return response()->json(['success' => false, 'message' => 'غير مصرح'], 403);
-        }
+        $this->authorize('cancel', $order);
 
-        $validated = $request->validate([
-            'reason' => 'required|string|max:500',
-        ]);
+        $request->validate(['reason' => 'required|string|max:500']);
 
         try {
             $order = $this->orderService->cancelOrder(
                 $order,
-                $validated['reason'],
+                $request->reason,
                 $request->user()->id,
             );
 
@@ -116,7 +86,6 @@ class OrderController extends Controller
                 'message' => 'تم إلغاء الطلب',
                 'data' => new OrderResource($order),
             ]);
-
         } catch (\App\Exceptions\OrderCreationException $e) {
             return response()->json([
                 'success' => false,
@@ -125,14 +94,9 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Confirm delivery.
-     */
     public function confirmDelivery(Request $request, Order $order)
     {
-        if ($order->user_id !== $request->user()->id) {
-            return response()->json(['success' => false, 'message' => 'غير مصرح'], 403);
-        }
+        $this->authorize('confirmDelivery', $order);
 
         if ($order->status !== Order::STATUS_SHIPPED) {
             return response()->json([
