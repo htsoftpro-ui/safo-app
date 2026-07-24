@@ -1,0 +1,784 @@
+openapi: "3.0.3"
+info:
+  title: Safo B2B API
+  description: B2B Wholesale Marketplace API for Yemen
+  version: "1.0.0"
+  contact:
+    name: htsoftpro
+    url: https://github.com/htsoftpro-ui
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local Development
+  - url: http://localhost:8080/api/v1
+    description: Docker
+  - url: https://api.safo.app/api/v1
+    description: Production
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        phone: { type: string }
+        type: { type: string, enum: [customer, supplier, admin] }
+        store_name: { type: string, nullable: true }
+        city: { type: string, nullable: true }
+        is_verified: { type: boolean }
+
+    Product:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+        price: { type: number, format: float }
+        compare_price: { type: number, nullable: true }
+        unit: { type: string }
+        stock_quantity: { type: integer }
+        is_active: { type: boolean }
+        is_featured: { type: boolean }
+        rating: { type: number }
+        sales_count: { type: integer }
+        supplier: { $ref: '#/components/schemas/Supplier' }
+        category: { $ref: '#/components/schemas/Category' }
+
+    Category:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+        children_count: { type: integer }
+        products_count: { type: integer }
+
+    Supplier:
+      type: object
+      properties:
+        id: { type: integer }
+        company_name: { type: string }
+        rating: { type: number }
+        is_verified: { type: boolean }
+
+    Order:
+      type: object
+      properties:
+        id: { type: integer }
+        order_number: { type: string }
+        status: { type: string, enum: [pending, confirmed, processing, ready, shipped, delivered, cancelled, returned] }
+        total_amount: { type: number }
+        payment_method: { type: string }
+        items: { type: array, items: { $ref: '#/components/schemas/OrderItem' } }
+
+    OrderItem:
+      type: object
+      properties:
+        id: { type: integer }
+        product_name: { type: string }
+        quantity: { type: integer }
+        unit_price: { type: number }
+        total_price: { type: number }
+
+    CartItem:
+      type: object
+      properties:
+        id: { type: integer }
+        product_id: { type: integer }
+        quantity: { type: integer }
+        unit_price: { type: number }
+        total_price: { type: number }
+        product: { $ref: '#/components/schemas/Product' }
+
+    Address:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        address: { type: string }
+        city: { type: string, nullable: true }
+        area: { type: string, nullable: true }
+        is_default: { type: boolean }
+        latitude: { type: number, nullable: true }
+        longitude: { type: number, nullable: true }
+
+    SuccessResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data: { type: object }
+
+    ErrorResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: false }
+        message: { type: string }
+        errors: { type: object, nullable: true }
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      security: []
+      tags: [System]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ok }
+                  version: { type: string, example: "1.0.0" }
+
+  # ─── Auth ─────────────────────────────────────────────
+
+  /auth/register:
+    post:
+      summary: Register new user
+      security: []
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, phone, password, password_confirmation]
+              properties:
+                name: { type: string }
+                phone: { type: string, minLength: 9, maxLength: 9 }
+                password: { type: string, minLength: 6 }
+                password_confirmation: { type: string }
+                type: { type: string, enum: [customer, supplier] }
+                store_name: { type: string }
+      responses:
+        '201':
+          description: Registered
+        '422':
+          description: Validation error
+
+  /auth/login:
+    post:
+      summary: Login
+      security: []
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, password]
+              properties:
+                phone: { type: string }
+                password: { type: string }
+      responses:
+        '200':
+          description: Logged in with token
+        '401':
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      summary: Logout
+      tags: [Auth]
+      responses:
+        '200':
+          description: Logged out
+
+  /auth/me:
+    get:
+      summary: Current user
+      tags: [Auth]
+      responses:
+        '200':
+          description: User data
+
+  # ─── Products ─────────────────────────────────────────
+
+  /products:
+    get:
+      summary: List products
+      security: []
+      tags: [Products]
+      parameters:
+        - name: category_id
+          in: query
+          schema: { type: integer }
+        - name: min_price
+          in: query
+          schema: { type: number }
+        - name: max_price
+          in: query
+          schema: { type: number }
+        - name: search
+          in: query
+          schema: { type: string }
+        - name: sort
+          in: query
+          schema: { type: string, enum: [price, rating, sales_count, created_at, name] }
+        - name: order
+          in: query
+          schema: { type: string, enum: [asc, desc] }
+        - name: per_page
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Paginated products
+
+  /products/featured:
+    get:
+      summary: Featured products
+      security: []
+      tags: [Products]
+      responses:
+        '200':
+          description: Featured products
+
+  /products/new-arrivals:
+    get:
+      summary: New arrivals
+      security: []
+      tags: [Products]
+      responses:
+        '200':
+          description: Latest products
+
+  /products/best-sellers:
+    get:
+      summary: Best sellers
+      security: []
+      tags: [Products]
+      responses:
+        '200':
+          description: Top selling products
+
+  /products/search:
+    get:
+      summary: Search products
+      security: []
+      tags: [Products]
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string, minLength: 2 }
+      responses:
+        '200':
+          description: Search results
+
+  /products/{id}:
+    get:
+      summary: Product detail
+      security: []
+      tags: [Products]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Product with supplier and reviews
+        '404':
+          description: Not found
+
+  # ─── Categories ───────────────────────────────────────
+
+  /categories:
+    get:
+      summary: List categories
+      security: []
+      tags: [Categories]
+      responses:
+        '200':
+          description: Categories with children count
+
+  /categories/{id}:
+    get:
+      summary: Category detail
+      security: []
+      tags: [Categories]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Category with children
+
+  /categories/{id}/products:
+    get:
+      summary: Products in category
+      security: []
+      tags: [Categories]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Paginated products
+
+  # ─── Cart ─────────────────────────────────────────────
+
+  /cart:
+    get:
+      summary: View cart
+      tags: [Cart]
+      responses:
+        '200':
+          description: Cart with items and subtotal
+    post:
+      summary: Add to cart
+      tags: [Cart]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [product_id, quantity]
+              properties:
+                product_id: { type: integer }
+                quantity: { type: integer, minimum: 1 }
+                notes: { type: string }
+      responses:
+        '201':
+          description: Added
+        '422':
+          description: Stock/min quantity error
+    delete:
+      summary: Clear cart
+      tags: [Cart]
+      responses:
+        '200':
+          description: Cleared
+
+  /cart/{id}:
+    put:
+      summary: Update cart item quantity
+      tags: [Cart]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [quantity]
+              properties:
+                quantity: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: Updated
+        '403':
+          description: Not your cart item
+    delete:
+      summary: Remove from cart
+      tags: [Cart]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Removed
+
+  # ─── Orders ───────────────────────────────────────────
+
+  /orders:
+    get:
+      summary: List my orders
+      tags: [Orders]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string }
+        - name: per_page
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Paginated orders
+    post:
+      summary: Create order from cart
+      tags: [Orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [address_id, payment_method]
+              properties:
+                address_id: { type: integer }
+                payment_method: { type: string, enum: [cash, credit, wallet] }
+                coupon_code: { type: string }
+      responses:
+        '201':
+          description: Order created
+        '422':
+          description: Cart empty or stock issue
+
+  /orders/{id}:
+    get:
+      summary: Order detail
+      tags: [Orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Order with items and history
+        '403':
+          description: Not your order
+
+  /orders/{id}/cancel:
+    post:
+      summary: Cancel order
+      tags: [Orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string }
+      responses:
+        '200':
+          description: Cancelled
+        '403':
+          description: Cannot cancel at this stage
+
+  /orders/{id}/confirm-delivery:
+    post:
+      summary: Confirm delivery
+      tags: [Orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Delivered
+        '422':
+          description: Not in shipped status
+
+  # ─── Addresses ────────────────────────────────────────
+
+  /addresses:
+    get:
+      summary: List my addresses
+      tags: [Addresses]
+      responses:
+        '200':
+          description: Addresses list
+    post:
+      summary: Add address
+      tags: [Addresses]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, address]
+              properties:
+                title: { type: string }
+                address: { type: string }
+                city: { type: string }
+                area: { type: string }
+                latitude: { type: number }
+                longitude: { type: number }
+                is_default: { type: boolean }
+      responses:
+        '201':
+          description: Created
+
+  /addresses/{id}:
+    put:
+      summary: Update address
+      tags: [Addresses]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Updated
+        '403':
+          description: Not your address
+    delete:
+      summary: Delete address
+      tags: [Addresses]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Deleted
+
+  # ─── Profile ──────────────────────────────────────────
+
+  /profile:
+    get:
+      summary: My profile
+      tags: [Profile]
+      responses:
+        '200':
+          description: Profile with addresses
+    put:
+      summary: Update profile
+      tags: [Profile]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                email: { type: string }
+                city: { type: string }
+      responses:
+        '200':
+          description: Updated
+    delete:
+      summary: Delete account
+      tags: [Profile]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password]
+              properties:
+                password: { type: string }
+      responses:
+        '200':
+          description: Deleted
+
+  /profile/avatar:
+    post:
+      summary: Upload avatar
+      tags: [Profile]
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [avatar]
+              properties:
+                avatar: { type: string, format: binary }
+      responses:
+        '200':
+          description: Uploaded
+
+  /profile/change-password:
+    post:
+      summary: Change password
+      tags: [Profile]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [current_password, password, password_confirmation]
+              properties:
+                current_password: { type: string }
+                password: { type: string, minLength: 6 }
+                password_confirmation: { type: string }
+      responses:
+        '200':
+          description: Changed
+
+  # ─── Supplier Orders ──────────────────────────────────
+
+  /supplier/orders:
+    get:
+      summary: Supplier's orders
+      tags: [Supplier - Orders]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Paginated orders
+
+  /supplier/orders/{id}:
+    get:
+      summary: Supplier order detail
+      tags: [Supplier - Orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Order detail
+        '403':
+          description: Not your order
+
+  /supplier/orders/{id}/accept:
+    post:
+      summary: Accept order (pending → confirmed)
+      tags: [Supplier - Orders]
+      responses:
+        '200':
+          description: Accepted
+        '403':
+          description: Not your order or wrong status
+
+  /supplier/orders/{id}/reject:
+    post:
+      summary: Reject order (pending → cancelled)
+      tags: [Supplier - Orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string }
+      responses:
+        '200':
+          description: Rejected
+
+  /supplier/orders/{id}/process:
+    post:
+      summary: Start processing (confirmed → processing)
+      tags: [Supplier - Orders]
+      responses:
+        '200':
+          description: Processing
+
+  /supplier/orders/{id}/ready:
+    post:
+      summary: Mark ready (processing → ready)
+      tags: [Supplier - Orders]
+      responses:
+        '200':
+          description: Ready
+
+  /supplier/orders/{id}/ship:
+    post:
+      summary: Ship order (ready → shipped)
+      tags: [Supplier - Orders]
+      responses:
+        '200':
+          description: Shipped
+
+  # ─── Supplier Products ────────────────────────────────
+
+  /supplier/products:
+    get:
+      summary: Supplier's products
+      tags: [Supplier - Products]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [active, inactive, all] }
+        - name: category_id
+          in: query
+          schema: { type: integer }
+        - name: search
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Paginated products
+    post:
+      summary: Add product
+      tags: [Supplier - Products]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, category_id, price, unit, stock_quantity]
+              properties:
+                name: { type: string }
+                category_id: { type: integer }
+                price: { type: number }
+                unit: { type: string }
+                stock_quantity: { type: integer }
+                min_order_quantity: { type: integer }
+                description: { type: string }
+      responses:
+        '201':
+          description: Created
+
+  /supplier/products/{id}:
+    put:
+      summary: Update product
+      tags: [Supplier - Products]
+      responses:
+        '200':
+          description: Updated
+        '403':
+          description: Not your product
+    delete:
+      summary: Delete product (soft)
+      tags: [Supplier - Products]
+      responses:
+        '200':
+          description: Deleted
+
+  /supplier/products/{id}/stock:
+    patch:
+      summary: Update stock quantity
+      tags: [Supplier - Products]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [quantity]
+              properties:
+                quantity: { type: integer }
+                action: { type: string, enum: [set, add, subtract], default: set }
+      responses:
+        '200':
+          description: Updated

@@ -5,21 +5,21 @@
 
 ---
 
-## 1. Laravel 11
+## 1. Laravel 12 (ترقية من Laravel 11)
 
 | البند | التفاصيل |
 |-------|---------|
-| **القرار** | Laravel 11 |
-| **البدائل المدروسة** | Node.js (NestJS), Django, Laravel 10 |
-| **لماذا Laravel 11** | آخر إصدار مستقر (released March 2024). يدعم PHP 8.2+. يُعدّل تلقائياً من Laravel 10. يُبسط cấuمة المشروع (لا app/Http/Kernel.php). |
-| **لماذا Laravel بدل Node.js** | التطبيق الأصلي على الأرجح Laravel (حزمة com.my_goods.my_goods_customer + نمط API + Yemeni dev ecosystem). Laravel هو الأكثر شيوعاً في اليمن والخليج. документация واسعة بالعربية. Sanctum مدمج. Migration system أقوى من任何 شيء في Node.js. |
-| **لماذا ليس Django** | Python أقل شيوعاً في سوق العمل اليمني. لا يوجد ما يثبت أن الأصلي يستخدم Django. |
-| **المزايا** | ecosystem ناضج + مجتمع عربي كبير + أدوات مدمجة (Auth, Queue, Cache, Mail) + Migration system ممتاز + Sanctum/Auth effortless |
-| **العيوب** | PHP أبطأ من Node.js في I/O-bound operations (فرق بسيط في حجم هذا المشروع). Laravel "ثقيل" للمشاريع الصغيرة جداً. |
-| **هل مبني على دليل** | 🔵 استنتاج — لا يوجد دليل مباشر على أن الأصلي يستخدم Laravel، لكن نمط API + package name يشير لذلك. |
-| **قابلية التغيير** | ✅ نعم — API contract (الـ endpoints والـ responses) مستقل عن framework. يمكن إعادة كتابة Backend بـ NestJS لاحقاً بدون تغيير Frontend. |
-| **مناسب للسوق اليمني** | ✅ نعم — Laravel هو Framework الأكثر طلباً في اليمن. مطورون يمنيون كثيرون يعرفونه. |
-| **التصنيف** | ✅ KEEP |
+| **القرار** | Laravel 12.64.0 |
+| **السبب الأصلي** | Laravel 11 — آخر إصدار مستقر وقت البناء الأولي (March 2024). يدعم PHP 8.2+. يُبسّط هيكل المشروع. |
+| **سبب الترقية** | أثناء محاولة تشغيل المشروع، اكتشفنا أن Laravel 11 يحتوي على security advisories تمنع `composer install` (PKSA-m5cs-t1y6-qpcs, PKSA-3r5d-mb8f-1qw9, وغيرها). الحل: الترقية إلى Laravel 12 الذي يُصلّح هذه الثغرات. |
+| **هل الترقية مشروعة؟** | ✅ نعم — Laravel 12 متوافق مع PHP 8.2+. نفس bootstrap/app.php يعمل. Sanctum 4.x متوافق. لا تغييرات breaking في API. |
+| **التحقق** | `composer install` ✅ · `php artisan about` ✅ · `php artisan migrate` ✅ · `php artisan test` (25/25) ✅ · API curl tests ✅ |
+| **البدائل المدروسة** | Node.js (NestJS), Django, Laravel 11 (مع تجاهل advisories) |
+| **لماذا Laravel بدل Node.js** | التطبيق الأصلي على الأرجح Laravel. Laravel هو الأكثر شيوعاً في اليمن والخليج. Sanctum مدمج. Migration system أقوى. |
+| **المزايا** | ecosystem ناضج + مجتمع عربي كبير + أدوات مدمجة + Laravel 12 يدعم PHP 8.2-8.4 + أمان محدّث |
+| **العيوب** | PHP أبطأ من Node.js في I/O-bound (فرق بسيط). Laravel "ثقيل" للمشاريع الصغيرة. |
+| **قابلية التغيير** | ✅ نعم — API contract مستقل عن framework. يمكن استبدال Backend بدون تغيير Frontend. |
+| **التصنيف** | ✅ KEEP (upgraded to v12) |
 
 ---
 
