@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Order model.
@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
  * - Status transitions are enforced via canTransitionTo()
  * - Financial fields use decimal(10,2) for Yemeni Rial precision
  * - confirmed_at, shipped_at, delivered_at are explicit timestamps for analytics
+ * - Order number uses atomic counter table to prevent race conditions
  */
 class Order extends Model
 {
@@ -27,6 +28,7 @@ class Order extends Model
     const STATUS_SHIPPED = 'shipped';
     const STATUS_DELIVERED = 'delivered';
     const STATUS_CANCELLED = 'cancelled';
+    const STATUS_RETURNED = 'returned';
 
     const PAYMENT_METHOD_CASH = 'cash';
     const PAYMENT_METHOD_CREDIT = 'credit';
@@ -47,7 +49,8 @@ class Order extends Model
         self::STATUS_PROCESSING => [self::STATUS_READY, self::STATUS_CANCELLED],
         self::STATUS_READY      => [self::STATUS_SHIPPED],
         self::STATUS_SHIPPED    => [self::STATUS_DELIVERED],
-        self::STATUS_DELIVERED  => [], // terminal state
+        self::STATUS_DELIVERED  => [self::STATUS_RETURNED],
+        self::STATUS_RETURNED   => [], // terminal state
         self::STATUS_CANCELLED  => [], // terminal state
     ];
 
@@ -65,6 +68,7 @@ class Order extends Model
         'payment_method',
         'payment_status',
         'delivery_address',
+        'delivery_city',
         'delivery_latitude',
         'delivery_longitude',
         'delivery_notes',
@@ -72,6 +76,7 @@ class Order extends Model
         'confirmed_at',
         'shipped_at',
         'delivered_at',
+        'returned_at',
         'cancellation_reason',
         'cancelled_by',
         'notes',
@@ -91,6 +96,7 @@ class Order extends Model
             'confirmed_at' => 'datetime',
             'shipped_at' => 'datetime',
             'delivered_at' => 'datetime',
+            'returned_at' => 'datetime',
         ];
     }
 
@@ -145,7 +151,11 @@ class Order extends Model
 
     public function scopeActive($query)
     {
-        return $query->whereNotIn('status', [self::STATUS_DELIVERED, self::STATUS_CANCELLED]);
+        return $query->whereNotIn('status', [
+            self::STATUS_DELIVERED,
+            self::STATUS_CANCELLED,
+            self::STATUS_RETURNED,
+        ]);
     }
 
     // ─── Business Logic ────────────────────────────────────
@@ -181,6 +191,7 @@ class Order extends Model
             self::STATUS_CONFIRMED => 'confirmed_at',
             self::STATUS_SHIPPED => 'shipped_at',
             self::STATUS_DELIVERED => 'delivered_at',
+            self::STATUS_RETURNED => 'returned_at',
         ];
         if (isset($timestampFields[$newStatus])) {
             $this->{$timestampFields[$newStatus]} = now();
@@ -213,11 +224,23 @@ class Order extends Model
     /**
      * Generate a unique, human-readable order number.
      * Format: ORD-YYYYMMDD-NNN
+     * Uses atomic counter to prevent race conditions.
      */
     public static function generateOrderNumber(): string
     {
         $date = now()->format('Ymd');
-        $sequence = self::whereDate('created_at', today())->count() + 1;
+
+        // Atomic increment — safe under concurrent requests
+        DB::table('order_sequences')->upsert(
+            ['date' => $date, 'counter' => 0],
+            ['date'],
+            ['counter' => DB::raw('counter + 1')]
+        );
+
+        $sequence = DB::table('order_sequences')
+            ->where('date', $date)
+            ->value('counter');
+
         return "ORD-{$date}-" . str_pad($sequence, 3, '0', STR_PAD_LEFT);
     }
 
@@ -228,6 +251,7 @@ class Order extends Model
     {
         $this->address_id = $address->id;
         $this->delivery_address = $address->full_address;
+        $this->delivery_city = $address->city;
         $this->delivery_latitude = $address->latitude;
         $this->delivery_longitude = $address->longitude;
         $this->save();
@@ -250,17 +274,14 @@ class Order extends Model
             return false;
         }
 
-        // Customers can cancel pending/confirmed orders
         if ($userType === 'customer') {
             return true;
         }
 
-        // Suppliers can cancel confirmed orders
         if ($userType === 'supplier' && $this->status === self::STATUS_CONFIRMED) {
             return true;
         }
 
-        // Admins can always cancel
         if ($userType === 'admin') {
             return true;
         }

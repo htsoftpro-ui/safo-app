@@ -84,7 +84,7 @@ class NotificationService
     private function sendToUser(User $user, array $notification): void
     {
         // Store in-app notification
-        $user->notifications()->create([
+        $user->appNotifications()->create([
             'type' => $notification['data']['type'],
             'title' => $notification['title'],
             'message' => $notification['body'],

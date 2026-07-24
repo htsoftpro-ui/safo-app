@@ -80,6 +80,11 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function appNotifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
     // ─── Scopes ────────────────────────────────────────────
 
     public function scopeCustomers($query)

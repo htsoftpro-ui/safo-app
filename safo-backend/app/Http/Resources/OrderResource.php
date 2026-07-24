@@ -43,6 +43,7 @@ class OrderResource extends JsonResource
             'shipped' => 'تم الشحن',
             'delivered' => 'تم التوصيل',
             'cancelled' => 'ملغي',
+            'returned' => 'تم الإرجاع',
             default => $this->status,
         };
     }

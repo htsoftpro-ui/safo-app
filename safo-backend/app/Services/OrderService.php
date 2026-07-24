@@ -95,8 +95,7 @@ class OrderService
             ]);
 
             // 4. Snapshot address
-            $order->address_id = $address->id;
-            $order->save();
+            $order->snapshotAddress($address);
 
             // 5. Create order items (snapshot product data)
             foreach ($cartItems as $item) {

@@ -24,6 +24,7 @@ return new class extends Migration
                 'shipped',      // out for delivery
                 'delivered',    // customer received
                 'cancelled',    // cancelled
+                'returned',     // returned after delivery
             ])->default('pending');
 
             // Financials
