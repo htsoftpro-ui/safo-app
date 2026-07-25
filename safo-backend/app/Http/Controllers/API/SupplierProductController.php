@@ -118,4 +118,69 @@ class SupplierProductController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Upload product image.
+     */
+    public function uploadImage(Request $request, Product $product)
+    {
+        $this->authorize('update', $product);
+
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ]);
+
+        $path = $request->file('image')->store('products', 'public');
+        $url = '/storage/' . $path;
+
+        // Add to images array
+        $images = $product->images ?? [];
+        $images[] = $url;
+        $product->update(['images' => $images]);
+
+        // Set as thumbnail if first image
+        if (!$product->thumbnail) {
+            $product->update(['thumbnail' => $url]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم رفع الصورة',
+            'data' => [
+                'url' => $url,
+                'thumbnail' => $product->fresh()->thumbnail,
+                'images' => $product->fresh()->images,
+            ],
+        ]);
+    }
+
+    /**
+     * Delete product image.
+     */
+    public function deleteImage(Request $request, Product $product)
+    {
+        $this->authorize('update', $product);
+
+        $request->validate([
+            'url' => 'required|string',
+        ]);
+
+        $images = $product->images ?? [];
+        $images = array_filter($images, fn ($img) => $img !== $request->url);
+        $product->update(['images' => array_values($images)]);
+
+        // Update thumbnail if deleted image was the thumbnail
+        if ($product->thumbnail === $request->url) {
+            $product->update(['thumbnail' => $images[0] ?? null]);
+        }
+
+        // Delete file
+        $path = str_replace('/storage/', '', $request->url);
+        \Storage::disk('public')->delete($path);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم حذف الصورة',
+        ]);
+    }
 }

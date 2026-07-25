@@ -7,6 +7,7 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\SupplierDashboardController;
 use App\Http\Controllers\API\SupplierOrderController;
 use App\Http\Controllers\API\SupplierProductController;
 use Illuminate\Support\Facades\Route;
@@ -83,6 +84,9 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
 Route::prefix('v1/supplier')
     ->middleware(['auth:sanctum', 'role:supplier'])
     ->group(function () {
+        // Supplier Dashboard
+        Route::get('/dashboard', [SupplierDashboardController::class, 'index']);
+
         // Supplier Orders
         Route::get('/orders', [SupplierOrderController::class, 'index']);
         Route::get('/orders/{order}', [SupplierOrderController::class, 'show']);
@@ -98,6 +102,8 @@ Route::prefix('v1/supplier')
         Route::put('/products/{product}', [SupplierProductController::class, 'update']);
         Route::delete('/products/{product}', [SupplierProductController::class, 'destroy']);
         Route::patch('/products/{product}/stock', [SupplierProductController::class, 'updateStock']);
+        Route::post('/products/{product}/image', [SupplierProductController::class, 'uploadImage']);
+        Route::delete('/products/{product}/image', [SupplierProductController::class, 'deleteImage']);
     });
 
 // ─── Admin Routes ─────────────────────────────────────────
