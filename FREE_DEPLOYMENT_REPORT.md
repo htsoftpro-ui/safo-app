@@ -1,237 +1,183 @@
 # FREE_DEPLOYMENT_REPORT.md
 
-> Safo B2B — Free Deployment Plan
+> Safo B2B — Free Deployment Guide (Updated)
 > Date: 2026-07-25
 
 ---
 
-## Free Hosting Analysis (2026)
+## البدائل المجانية المتاحة
 
-### Services Evaluated
+### الخيار 1: Railway.app (الأفضل للاختبار)
 
-| Service | Free Tier | MySQL | Redis | PHP 8.2 | Queue | Cron | Card Required | Verdict |
-|---------|-----------|-------|-------|---------|-------|------|---------------|---------|
-| **Oracle Cloud Always Free** | ✅ Forever | ✅ | ✅ | ✅ | ✅ | ✅ | Verification only ($0) | **Best option** |
-| InfinityFree | ✅ Forever | ✅ | ❌ | ✅ 8.3 | ❌ | ❌ | No | Too limited |
-| Render.com | ✅ Limited | ❌ PostgreSQL | ❌ | Via Docker | ❌ | ❌ | Yes | MySQL not free |
-| Railway.app | ❌ $1/mo min | ✅ | ✅ | ✅ | ✅ | ✅ | Yes | Not free |
-| Fly.io | ❌ No new free | ✅ | ✅ | ✅ | ✅ | ✅ | Yes | Closed free tier |
-| Laravel Cloud | ❌ $5/mo min | ✅ | ✅ | ✅ | ✅ | ✅ | Yes | Not free |
-| Koyeb | ✅ Limited | ❌ | ❌ | ✅ | ❌ | ❌ | Verification | Too limited |
-| GitHub Pages | ✅ Forever | N/A | N/A | N/A | N/A | N/A | No | Static only |
+| البند | التفاصيل |
+|-------|---------|
+| **الرابط** | https://railway.com |
+| **السعر** | $5 رصيد مجاني (30 يوم) |
+| **بطاقة بنكية** | ❌ لا تحتاج |
+| **MySQL** | ✅ مدعوم |
+| **Redis** | ✅ مدعوم |
+| **PHP 8.2** | ✅ مدعوم |
+| **Queue** | ✅ مدعوم |
+| **Cron** | ✅ مدعوم |
+| **Docker** | ✅ مدعوم |
+| **Custom Domain** | ✅ مدعوم |
+| **SSL** | ✅ مجاني |
+| **ينام** | ❌ لا ينام |
 
-### Chosen Architecture
+**الخطوات:**
+1. سجل في https://railway.com (بـ GitHub أو Google)
+2. أنشئ مشروع جديد
+3. أضف MySQL service
+4. أضف Redis service
+5. أضف API service من GitHub repo
+6. Railway يستخدم `railway.json` + `Dockerfile.railway` تلقائياً
+7. أضف Environment Variables
+8. انشر!
 
+**بعد 30 يوم:** $1/شهر فقط (أقل من قهوة)
+
+---
+
+### الخيار 2: InfinityFree (مجاني للأبد)
+
+| البند | التفاصيل |
+|-------|---------|
+| **الرابط** | https://www.infinityfree.com |
+| **السعر** | مجاني للأبد |
+| **بطاقة بنكية** | ❌ لا تحتاج |
+| **MySQL** | ✅ مدعوم |
+| **Redis** | ❌ غير مدعوم |
+| **PHP 8.3** | ✅ مدعوم |
+| **Queue** | ❌ غير مدعوم |
+| **Cron** | ❌ غير مدعوم |
+| **SSH** | ❌ غير مدعوم |
+| **Custom Domain** | ✅ مدعوم |
+| **SSL** | ✅ مجاني |
+| **ينام** | ❌ لا ينام |
+
+**القيود:**
+- لا Redis → نستخدم file cache
+- لا Queue → نستخدم sync queue
+- لا Cron → بدون scheduler
+- لا SSH → رفع عبر FTP
+- 10 ثانية حد أقصى للـ PHP execution
+
+**يعمل:**
+- Auth (register/login/logout)
+- Products (browse/search/filter)
+- Cart (add/update/delete)
+- Orders (create/cancel/track)
+- Addresses (CRUD)
+- Profile (get/update)
+- Supplier operations
+
+**لا يعمل:**
+- Background queue jobs
+- Scheduled tasks
+- Push notifications
+- Real-time features
+
+---
+
+### الخيار 3: GitHub Pages + Railway DB
+
+لوحة المورد على GitHub Pages (مجاني للأبد) + API على Railway.
+
+---
+
+## التوصية
+
+**لاختبار سريع (30 يوم):** Railway.app — يدعم كل شيء
+
+**لمجاني دائم:** InfinityFree — يعمل مع قيود بسيطة
+
+**الأفضل:** Railway ($1/شهر بعد الفترة المجانية) — أرخص من قهوة
+
+---
+
+## ملفات النشر جاهزة
+
+| الملف | الغرض |
+|-------|-------|
+| `Dockerfile.railway` | Docker image لـ Railway |
+| `railway.json` | Railway deployment config |
+| `deploy-oracle-free.sh` | Oracle Cloud setup (إذا تحققت لاحقاً) |
+| `.github/workflows/deploy-dashboard.yml` | GitHub Pages للـ Dashboard |
+
+---
+
+## طريقة النشر على Railway (الخطوات التفصيلية)
+
+### 1. سجل في Railway
 ```
-┌─────────────────────────────────────────────────────┐
-│           Oracle Cloud Always Free (ARM VM)         │
-│           2 OCPUs • 12 GB RAM • 200 GB SSD         │
-│                                                      │
-│  ┌──────────────┐  ┌──────────┐  ┌──────────────┐  │
-│  │  Nginx       │  │  MySQL 8 │  │  Redis 7     │  │
-│  │  + PHP 8.2   │  │          │  │              │  │
-│  │  + Laravel   │  │          │  │              │  │
-│  └──────────────┘  └──────────┘  └──────────────┘  │
-│                                                      │
-│  ┌──────────────┐  ┌──────────┐                     │
-│  │ Queue Worker │  │Scheduler │                     │
-│  └──────────────┘  └──────────┘                     │
-│                                                      │
-│  Public IP: xxx.xxx.xxx.xxx                          │
-│  API: http://xxx.xxx.xxx.xxx/api/v1/                │
-└─────────────────────────────────────────────────────┘
+https://railway.com → Sign up with GitHub
+```
 
-┌─────────────────────────────────────────────────────┐
-│           GitHub Pages (Free Forever)               │
-│                                                      │
-│  Supplier Dashboard: Vue.js 3 SPA                   │
-│  URL: https://htsoftpro-ui.github.io/safo-app/      │
-└─────────────────────────────────────────────────────┘
+### 2. أنشئ مشروع
+```
+New Project → Deploy from GitHub Repo → htsoftpro-ui/safo-app
+```
 
-┌─────────────────────────────────────────────────────┐
-│           Android App (Local Device)                │
-│                                                      │
-│  Points to: http://xxx.xxx.xxx.xxx/api/v1/          │
-└─────────────────────────────────────────────────────┘
+### 3. أضف قاعدة البيانات
+```
+New → Database → MySQL → يُنشأ تلقائياً
+```
+
+### 4. أضف Redis
+```
+New → Database → Redis → يُنشأ تلقائياً
+```
+
+### 5. أضف Variables
+```
+APP_KEY=base64:xxx (generate with: php artisan key:generate --show)
+APP_ENV=production
+APP_DEBUG=false
+```
+
+### 6. Railway يكتشف تلقائياً
+```
+Dockerfile.railway → يبني المشروع
+railway.json → يحدد أمر التشغيل
+```
+
+### 7. احصل على الرابط
+```
+Settings → Generate Domain
+→ https://safo-api-production-xxxx.up.railway.app
+```
+
+### 8. اختبر
+```
+curl https://safo-api-production-xxxx.up.railway.app/api/v1/health
 ```
 
 ---
 
-## Deployment Steps
+## تحديث الروابط في المشروع
 
-### Step 1: Oracle Cloud Free Tier
-
-1. Go to https://cloud.oracle.com
-2. Sign up (credit card for verification only, $0 charges)
-3. Create an ARM VM instance:
-   - Image: Ubuntu 22.04 aarch64
-   - Shape: VM.Standard.A1.Flex (2 OCPUs, 12 GB RAM)
-   - Boot volume: 50 GB
-4. Open ports 80 and 443 in security list
-5. SSH into the instance
-6. Run: `bash deploy-oracle-free.sh`
-
-### Step 2: GitHub Pages (Supplier Dashboard)
-
-1. Go to repository Settings → Pages
-2. Source: GitHub Actions
-3. Push to main triggers deployment
-4. URL: `https://htsoftpro-ui.github.io/safo-app/`
-
-### Step 3: Update API URLs
-
-**Supplier Dashboard** (`safo-supplier-dashboard/src/api/index.ts`):
+### Vue Dashboard
 ```typescript
-// Change BASE_URL to your Oracle Cloud IP
+// src/api/index.ts
 const api = axios.create({
-  baseURL: 'http://YOUR_ORACLE_IP/api/v1',
+  baseURL: 'https://safo-api-production-xxxx.up.railway.app/api/v1',
 })
 ```
 
-**Android App** (`safo-customer-android/app/src/main/java/com/safo/app/di/NetworkModule.kt`):
+### Android App
 ```kotlin
-// Change BASE_URL to your Oracle Cloud IP
-private const val BASE_URL = "http://YOUR_ORACLE_IP/api/v1/"
-```
-
-### Step 4: SSL (Optional)
-
-```bash
-# On Oracle Cloud VM:
-sudo certbot --nginx -d your-domain.com
+// di/NetworkModule.kt
+private const val BASE_URL = "https://safo-api-production-xxxx.up.railway.app/api/v1/"
 ```
 
 ---
 
-## Environment Variables
+## النتيجة
 
-Set on Oracle Cloud VM in `/var/www/safo-app/safo-backend/.env`:
+| المكون | الرابط | الحالة |
+|--------|--------|--------|
+| Laravel API | https://safo-api-xxx.up.railway.app/api/v1 | ⏳ بعد النشر |
+| Vue Dashboard | https://htsoftpro-ui.github.io/safo-app/ | ⏳ بعد تفعيل GH Pages |
+| Android | يتصل بالـ API | ⏳ بعد تحديث URL |
 
-| Variable | Value |
-|----------|-------|
-| APP_ENV | production |
-| APP_DEBUG | false |
-| APP_URL | http://YOUR_IP |
-| DB_CONNECTION | mysql |
-| DB_HOST | 127.0.0.1 |
-| DB_DATABASE | safo |
-| DB_USERNAME | safo |
-| DB_PASSWORD | (auto-generated) |
-| REDIS_HOST | 127.0.0.1 |
-| CACHE_STORE | redis |
-| QUEUE_CONNECTION | redis |
-| SESSION_DRIVER | redis |
-
----
-
-## Free Tier Limits
-
-### Oracle Cloud Always Free
-
-| Resource | Limit |
-|----------|-------|
-| ARM OCPUs | 4 (using 2) |
-| RAM | 24 GB (using 12) |
-| Storage | 200 GB total |
-| Outbound bandwidth | 10 TB/month |
-| Duration | Forever (no expiry) |
-| Credit card | Verification only ($0) |
-
-### GitHub Pages
-
-| Resource | Limit |
-|----------|-------|
-| Bandwidth | 100 GB/month |
-| Storage | 1 GB |
-| Build minutes | 2000/month |
-| Custom domain | Supported |
-| SSL | Free |
-| Duration | Forever |
-
----
-
-## What Works for Free
-
-| Component | Status | Notes |
-|-----------|--------|-------|
-| Laravel API | ✅ | Full functionality |
-| MySQL 8 | ✅ | Local on VM |
-| Redis | ✅ | Local on VM |
-| Queue Worker | ✅ | systemd service |
-| Scheduler | ✅ | cron job |
-| Vue Dashboard | ✅ | GitHub Pages |
-| SSL | ✅ | Let's Encrypt |
-| Custom Domain | ✅ | Point DNS to VM |
-| Android Access | ✅ | Via public IP |
-
-## What Doesn't Work for Free
-
-| Component | Reason | Workaround |
-|-----------|--------|------------|
-| Push Notifications | Needs Firebase project | Add later |
-| Email (SMTP) | Needs mail service | Use log driver |
-| CDN | Not needed for MVP | Add Cloudflare later |
-| Custom domain for API | Needs DNS setup | Use IP directly |
-
----
-
-## Limitations
-
-1. **Sleep**: Oracle VM is always on (no sleep). GitHub Pages is always on.
-2. **Bandwidth**: 10 TB/month on Oracle (more than enough). 100 GB on GitHub Pages.
-3. **Storage**: 200 GB total on Oracle (plenty for MVP).
-4. **Support**: Community support only (no SLA).
-5. **IP Changes**: Public IP may change on VM reboot (use dynamic DNS or elastic IP).
-
----
-
-## Test Accounts
-
-| Role | Phone | Password |
-|------|-------|----------|
-| Admin | 770000001 | password123 |
-| Supplier 1 | 771000001 | password123 |
-| Supplier 2 | 771000002 | password123 |
-| Customer 1 | 772000001 | password123 |
-| Customer 2 | 772000002 | password123 |
-
----
-
-## Cost Summary
-
-| Item | Cost |
-|------|------|
-| Oracle Cloud VM | $0/month (Always Free) |
-| GitHub Pages | $0/month (free forever) |
-| Domain (optional) | ~$10/year |
-| SSL | $0 (Let's Encrypt) |
-| **Total** | **$0/month** |
-
----
-
-## Production Upgrade Path
-
-When ready for production:
-
-| Upgrade | Cost | Benefit |
-|---------|------|---------|
-| Custom domain | ~$10/year | Professional URL |
-| Elastic IP | $0 (Oracle) | Stable IP |
-| Managed MySQL | ~$15/month | Automated backups |
-| Monitoring | Free (UptimeRobot) | Uptime alerts |
-| CDN | Free (Cloudflare) | Global speed |
-| Email | Free (Mailgun) | Transactional email |
-
----
-
-## Status
-
-- [x] Deployment script created
-- [x] GitHub Actions workflow for dashboard
-- [ ] Oracle Cloud account created (manual)
-- [ ] VM deployed (manual)
-- [ ] API tested from internet
-- [ ] Dashboard tested from internet
-- [ ] Android tested with public API
-
-**Note**: Oracle Cloud account creation and VM deployment require manual steps (sign up, create instance, SSH). The `deploy-oracle-free.sh` script automates the server setup once connected.
+**التكلفة:** $0 لمدة 30 يوم، ثم $1/شهر

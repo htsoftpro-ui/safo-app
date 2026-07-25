@@ -1,0 +1,41 @@
+services:
+  # Laravel API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.railway
+    variables:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_KEY: ${APP_KEY}
+      APP_URL: ${RAILWAY_PUBLIC_DOMAIN_URL}
+      DB_CONNECTION: mysql
+      DB_HOST: ${MYSQL_HOST}
+      DB_PORT: ${MYSQL_PORT}
+      DB_DATABASE: ${MYSQL_DATABASE}
+      DB_USERNAME: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      SESSION_DRIVER: redis
+      SANCTUM_TOKEN_EXPIRATION: "10080"
+    depends_on:
+      - mysql
+      - redis
+
+  # MySQL
+  mysql:
+    image: mysql:8.0
+    variables:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: safo
+      MYSQL_USER: safo
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumeMounts:
+      - /var/lib/mysql
+
+  # Redis
+  redis:
+    image: redis:7-alpine
