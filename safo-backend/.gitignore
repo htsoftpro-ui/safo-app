@@ -22,3 +22,4 @@ storage/framework/views/
 storage/framework/cache/
 storage/framework/sessions/
 storage/framework/testing/
+storage/app/public/
