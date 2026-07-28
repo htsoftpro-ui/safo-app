@@ -2,9 +2,6 @@ name: Deploy Admin Dashboard to GitHub Pages
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ['safo-admin-dashboard/**']
 
 permissions:
   contents: read
