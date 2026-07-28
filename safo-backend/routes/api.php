@@ -108,8 +108,43 @@ Route::prefix('v1/supplier')
 
 // ─── Admin Routes ─────────────────────────────────────────
 
+// ─── Admin Routes ─────────────────────────────────────────
+
 Route::prefix('v1/admin')
     ->middleware(['auth:sanctum', 'role:admin'])
     ->group(function () {
-        // TODO Phase 2: Admin endpoints
+
+        // Dashboard
+        Route::get('/dashboard', [\App\Http\Controllers\API\Admin\AdminDashboardController::class, 'index']);
+
+        // Users
+        Route::get('/users', [\App\Http\Controllers\API\Admin\AdminUserController::class, 'index']);
+        Route::post('/users', [\App\Http\Controllers\API\Admin\AdminUserController::class, 'store']);
+        Route::get('/users/{user}', [\App\Http\Controllers\API\Admin\AdminUserController::class, 'show']);
+        Route::patch('/users/{user}/toggle-status', [\App\Http\Controllers\API\Admin\AdminUserController::class, 'toggleStatus']);
+        Route::patch('/users/{user}/verify-supplier', [\App\Http\Controllers\API\Admin\AdminUserController::class, 'verifySupplier']);
+        Route::put('/users/{user}/role', [\App\Http\Controllers\API\Admin\AdminUserController::class, 'updateRole']);
+        Route::delete('/users/{user}', [\App\Http\Controllers\API\Admin\AdminUserController::class, 'destroy']);
+
+        // Categories
+        Route::apiResource('/categories', \App\Http\Controllers\API\Admin\AdminCategoryController::class);
+
+        // Products
+        Route::get('/products', [\App\Http\Controllers\API\Admin\AdminProductController::class, 'index']);
+        Route::get('/products/{product}', [\App\Http\Controllers\API\Admin\AdminProductController::class, 'show']);
+        Route::patch('/products/{product}/toggle-active', [\App\Http\Controllers\API\Admin\AdminProductController::class, 'toggleActive']);
+        Route::patch('/products/{product}/toggle-featured', [\App\Http\Controllers\API\Admin\AdminProductController::class, 'toggleFeatured']);
+        Route::delete('/products/{product}', [\App\Http\Controllers\API\Admin\AdminProductController::class, 'destroy']);
+
+        // Orders
+        Route::get('/orders', [\App\Http\Controllers\API\Admin\AdminOrderController::class, 'index']);
+        Route::get('/orders/{order}', [\App\Http\Controllers\API\Admin\AdminOrderController::class, 'show']);
+        Route::post('/orders/{order}/cancel', [\App\Http\Controllers\API\Admin\AdminOrderController::class, 'cancel']);
+        Route::patch('/orders/{order}/status', [\App\Http\Controllers\API\Admin\AdminOrderController::class, 'updateStatus']);
+
+        // Reports
+        Route::get('/reports/sales', [\App\Http\Controllers\API\Admin\AdminReportController::class, 'sales']);
+        Route::get('/reports/suppliers', [\App\Http\Controllers\API\Admin\AdminReportController::class, 'suppliers']);
+        Route::get('/reports/users', [\App\Http\Controllers\API\Admin\AdminReportController::class, 'users']);
+        Route::get('/reports/financial', [\App\Http\Controllers\API\Admin\AdminReportController::class, 'financial']);
     });

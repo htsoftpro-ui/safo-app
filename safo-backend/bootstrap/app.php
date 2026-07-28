@@ -21,6 +21,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
         $middleware->statefulApi();
+        // CORS is handled automatically by Illuminate\Http\Middleware\HandleCors
+        // which is registered by default in the global middleware stack.
+        // Ensure it's present for API routes:
+        $middleware->api(prepend: [
+            \Illuminate\Http\Middleware\HandleCors::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // All API requests should render as JSON
