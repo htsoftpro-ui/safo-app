@@ -28,6 +28,8 @@ Route::prefix('v1')->group(function () {
     // Auth
     Route::post('/auth/register', [AuthController::class, 'register']);
     Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
     // Health check
     Route::get('/health', fn () => response()->json(['status' => 'ok', 'version' => '1.0.0']));
@@ -53,6 +55,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     // Auth
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
+    Route::post('/auth/send-otp', [AuthController::class, 'sendOtp']);
+    Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp']);
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'show']);

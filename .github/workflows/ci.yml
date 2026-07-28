@@ -25,7 +25,7 @@ jobs:
           --health-cmd="mysqladmin ping -h localhost"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=10
 
     steps:
       - uses: actions/checkout@v4
@@ -37,12 +37,20 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, bcmath, gd, intl, redis
           coverage: none
 
+      - name: Wait for MySQL
+        run: |
+          for i in $(seq 1 30); do
+            mysqladmin ping -h 127.0.0.1 --silent && echo "MySQL ready" && break
+            echo "Waiting for MySQL... ($i/30)"
+            sleep 2
+          done
+
       - name: Copy .env
         run: |
           cp .env.example .env
           sed -i 's/DB_HOST=mysql/DB_HOST=127.0.0.1/' .env
           sed -i 's/DB_USERNAME=safo/DB_USERNAME=root/' .env
-          sed -i 's/DB_PASSWORD=secret/DB_PASSWORD=root/' .env
+          sed -i 's/DB_PASSWORD=secret/root/' .env
           sed -i 's/DB_DATABASE=safo/DB_DATABASE=safo_test/' .env
           sed -i 's/REDIS_HOST=redis/REDIS_HOST=127.0.0.1/' .env
           sed -i 's/CACHE_STORE=redis/CACHE_STORE=file/' .env
@@ -73,4 +81,4 @@ jobs:
         run: |
           php artisan migrate:fresh --force
           php artisan db:seed --force
-          echo "✅ Migrations and seeders OK"
+          echo "Migrations and seeders OK"
