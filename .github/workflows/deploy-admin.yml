@@ -1,6 +1,7 @@
 name: Deploy Admin Dashboard to GitHub Pages
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths: ['safo-admin-dashboard/**']
@@ -12,14 +13,16 @@ permissions:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on:
+  workflow_dispatch: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version:
+  workflow_dispatch: '20'
           cache: 'npm'
           cache-dependency-path: safo-admin-dashboard/package-lock.json
 
@@ -38,7 +41,8 @@ jobs:
 
   deploy:
     needs: build-and-deploy
-    runs-on: ubuntu-latest
+    runs-on:
+  workflow_dispatch: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
