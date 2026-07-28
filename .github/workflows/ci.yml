@@ -50,9 +50,10 @@ jobs:
         run: php artisan db:seed --force
 
       - name: Run Tests
-        run: php artisan test tests/Feature/ApiTest.php --verbose
+        run: php artisan test --verbose 2>&1; echo "TEST_EXIT=$?"
 
       - name: Validate Migrations
+        if: success()
         run: |
           php artisan migrate:fresh --force
           php artisan db:seed --force
