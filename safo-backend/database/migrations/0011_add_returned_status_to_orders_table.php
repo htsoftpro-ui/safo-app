@@ -19,7 +19,7 @@ return new class extends Migration
 
         Schema::table('orders', function (Blueprint $table) {
             if (!Schema::hasColumn('orders', 'returned_at')) {
-                $table->timestamp('returned_at')->nullable()->after('delivered_at');
+                $table->timestamp('returned_at')->nullable();
             }
         });
     }
