@@ -54,14 +54,28 @@ export interface Order {
   order_number: string
   status: string
   status_label: string
+  subtotal: number
+  delivery_fee: number
+  discount_amount: number
   total_amount: number
   payment_method: string
   payment_status: string
+  delivery_address?: string
+  delivery_notes?: string
   customer_name?: string
   supplier_name?: string
   user?: User
   supplier?: Supplier
   items?: OrderItem[]
+  status_history?: StatusHistory[]
+  created_at: string
+}
+
+export interface StatusHistory {
+  from_status: string | null
+  to_status: string
+  note?: string
+  changed_by?: { id: number; name: string; type: string }
   created_at: string
 }
 
