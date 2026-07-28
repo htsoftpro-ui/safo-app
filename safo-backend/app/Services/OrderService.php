@@ -39,6 +39,15 @@ class OrderService
             throw new \App\Exceptions\OrderCreationException('السلة فارغة');
         }
 
+        // Verify supplier account is active
+        $supplier = \App\Models\Supplier::find($cartItems->first()->supplier_id);
+        if (!$supplier || !$supplier->is_active) {
+            throw new \App\Exceptions\OrderCreationException('المورد غير متاح حالياً');
+        }
+        if (!$supplier->user || !$supplier->user->is_active) {
+            throw new \App\Exceptions\OrderCreationException('المورد غير متاح حالياً');
+        }
+
         // Group cart items by supplier — one order per supplier
         $grouped = $cartItems->groupBy('supplier_id');
 
