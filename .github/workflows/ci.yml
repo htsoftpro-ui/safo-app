@@ -57,14 +57,16 @@ jobs:
         run: php artisan db:seed --force
 
       - name: Run Tests
-        run: |
-          php artisan test tests/Feature/SimpleTest.php --verbose 2>&1 || true
-          echo "EXIT: $?"
+        run: php artisan test --verbose 2>&1 || true
+        continue-on-error: true
+
+      - name: Run Tests (strict)
+        run: php artisan test
 
       - name: Validate Routes
         run: |
-          php artisan route:list --columns=method,uri
-          echo "Routes validated"
+          php artisan route:list --columns=method,uri 2>&1 | head -30
+          echo "Routes validated successfully"
 
       - name: Validate Migrations
         run: |
