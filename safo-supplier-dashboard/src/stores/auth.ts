@@ -24,6 +24,10 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const { data } = await authApi.login(phone, password)
       if (data.success) {
+        // Frontend role check: only supplier accounts allowed
+        if (data.data.user.type !== 'supplier') {
+          return { success: false, message: 'هذا الحساب ليس حساب مورد' }
+        }
         token.value = data.data.token
         user.value = data.data.user
         localStorage.setItem('token', data.data.token)

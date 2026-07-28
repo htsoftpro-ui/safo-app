@@ -33,6 +33,12 @@ router.beforeEach((to) => {
   const auth = useAuthStore()
   if (to.meta.requiresAuth && !auth.isAuthenticated) return '/login'
   if (to.meta.guest && auth.isAuthenticated) return '/'
+
+  // Role guard: only supplier users can access supplier routes
+  if (to.meta.requiresAuth && auth.isAuthenticated && !auth.isSupplier) {
+    auth.logout()
+    return '/login'
+  }
 })
 
 export default router

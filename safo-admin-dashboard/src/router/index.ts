@@ -34,6 +34,12 @@ router.beforeEach((to) => {
   const auth = useAuthStore()
   if (to.meta.requiresAuth && !auth.isAuthenticated) return '/login'
   if (to.meta.guest && auth.isAuthenticated) return '/'
+
+  // Role guard: only admin users can access admin routes
+  if (to.meta.requiresAuth && auth.isAuthenticated && !auth.isAdmin) {
+    auth.logout()
+    return '/login'
+  }
 })
 
 export default router

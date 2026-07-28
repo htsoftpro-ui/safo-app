@@ -22,7 +22,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 || error.response?.status === 403) {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       router.push('/login')
@@ -37,7 +37,7 @@ export default api
 
 export const authApi = {
   login: (phone: string, password: string) =>
-    api.post('/auth/login', { phone, password }),
+    api.post('/auth/login', { phone, password, role: 'supplier' }),
   register: (data: Record<string, string>) =>
     api.post('/auth/register', data),
   logout: () => api.post('/auth/logout'),

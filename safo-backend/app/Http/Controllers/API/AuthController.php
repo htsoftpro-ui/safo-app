@@ -69,6 +69,31 @@ class AuthController extends Controller
             ], 403);
         }
 
+        // Role-based login restriction: each dashboard only accepts its own role
+        if ($request->has('role')) {
+            $requestedRole = $request->input('role');
+            $allowedRoles = ['admin', 'supplier', 'customer'];
+
+            if (!in_array($requestedRole, $allowedRoles)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'نوع الحساب غير صالح',
+                ], 422);
+            }
+
+            if ($user->type !== $requestedRole) {
+                $roleNames = [
+                    'admin' => 'مدير النظام',
+                    'supplier' => 'المورد',
+                    'customer' => 'العميل',
+                ];
+                return response()->json([
+                    'success' => false,
+                    'message' => 'هذا الحساب لا يملك صلاحية الدخول كـ' . ($roleNames[$requestedRole] ?? $requestedRole),
+                ], 403);
+            }
+        }
+
         if ($request->has('fcm_token')) {
             $user->update(['fcm_token' => $request->fcm_token]);
         }
