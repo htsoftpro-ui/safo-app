@@ -50,7 +50,14 @@ jobs:
         run: php artisan db:seed --force
 
       - name: Run Tests
-        run: php artisan test --verbose 2>&1; echo "TEST_EXIT=$?"
+        run: php artisan test --verbose 2>&1 | tee ../test-output.log; test ${PIPESTATUS[0]} -eq 0
+
+      - name: Upload test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-log
+          path: test-output.log
 
       - name: Validate Migrations
         if: success()
