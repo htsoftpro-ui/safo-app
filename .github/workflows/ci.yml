@@ -64,7 +64,7 @@ jobs:
         run: php artisan test --parallel
 
       - name: Validate Routes
-        run: php artisan route:list --columns=method,uri | grep -c "api/" | xargs -I{} echo "API Routes: {}"
+        run: php artisan route:list --columns=method,uri | grep -c "api/" | xargs -I'{}' echo "API Routes: '{}'"
 
       - name: Validate Migrations
         run: |
