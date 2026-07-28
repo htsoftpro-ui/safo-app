@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath, URL } from 'node:url';
 export default defineConfig({
     plugins: [vue(), tailwindcss()],
-    base: process.env.NODE_ENV === 'production' ? '/safo-admin/' : '/',
+    base: '/safo-app/admin/',
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
