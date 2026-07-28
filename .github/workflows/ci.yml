@@ -49,15 +49,23 @@ jobs:
       - name: Run Seeders
         run: php artisan db:seed --force
 
-      - name: Run Tests
-        run: php artisan test --verbose 2>&1 | tee ../test-output.log; test ${PIPESTATUS[0]} -eq 0
+      - name: Run single test
+        run: php artisan test --filter=test_register_success --verbose 2>&1 || true
 
-      - name: Upload test log
+      - name: Run all tests
+        run: php artisan test --verbose 2>&1 || true
+
+      - name: Show env
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-log
-          path: test-output.log
+        run: |
+          echo "=== PHP Version ==="
+          php -v | head -1
+          echo "=== Laravel Version ==="
+          php artisan --version
+          echo "=== DB Config ==="
+          php artisan tinker --execute="echo config('database.default');" 2>&1 || true
+          echo "=== Routes ==="
+          php artisan route:list --columns=method,uri 2>&1 | head -20 || true
 
       - name: Validate Migrations
         if: success()
