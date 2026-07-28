@@ -63,9 +63,6 @@ jobs:
       - name: Generate Key
         run: php artisan key:generate --force
 
-      - name: Publish Sanctum Migrations
-        run: php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
-
       - name: Run Migrations
         run: php artisan migrate --force
 
