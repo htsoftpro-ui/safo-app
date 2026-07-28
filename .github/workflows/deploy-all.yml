@@ -12,23 +12,79 @@ permissions:
   id-token: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build combined site
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Build Admin Dashboard
+      - name: Install Admin dependencies
+        working-directory: safo-admin-dashboard
+        run: npm ci
+
+      - name: Build Admin Dashboard
+        working-directory: safo-admin-dashboard
+        run: npm run build
+
+      # Build Supplier Dashboard
+      - name: Install Supplier dependencies
+        working-directory: safo-supplier-dashboard
+        run: npm ci
+
+      - name: Build Supplier Dashboard
+        working-directory: safo-supplier-dashboard
+        run: npm run build
+
+      # Combine into single site
+      - name: Assemble site
         run: |
-          mkdir -p _site/supplier _site/admin
-          cp safo-supplier-dashboard/public/index.html _site/supplier/index.html
-          cp safo-admin-dashboard/public/index.html _site/admin/index.html
+          mkdir -p _site/admin _site/supplier
+          cp -r safo-admin-dashboard/dist/* _site/admin/
+          cp -r safo-supplier-dashboard/dist/* _site/supplier/
           cp safo-customer-web/index.html _site/index.html
+
+          # SPA fallback: 404.html redirects to correct app
+          cat > _site/404.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Redirecting...</title>
+            <script>
+              var path = window.location.pathname;
+              var base = '/safo-app';
+              var rel = path.replace(base, '');
+
+              if (rel.startsWith('/admin/')) {
+                window.location.replace(base + '/admin/');
+              } else if (rel.startsWith('/supplier/')) {
+                window.location.replace(base + '/supplier/');
+              } else {
+                window.location.replace(base + '/');
+              }
+            </script>
+          </head>
+          <body><p>Redirecting...</p></body>
+          </html>
+          EOF
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
