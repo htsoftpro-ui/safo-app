@@ -21,10 +21,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    // Change this to your actual server URL
+    // Production URL — change this to your actual server
     // For emulator: http://10.0.2.2:8000
-    // For device: http://YOUR_IP:8000
-    private const val BASE_URL = "http://10.0.2.2:8000/api/v1/"
+    // For production: https://your-domain.com
+    private const val BASE_URL = "https://safo-app.up.railway.app/api/v1/"
 
     @Provides
     @Singleton
