@@ -43,13 +43,6 @@ jobs:
       - name: Generate Key
         run: php artisan key:generate --force
 
-      - name: Debug Environment
-        run: |
-          php -v
-          php artisan --version
-          cat .env | grep DB_
-          php artisan route:list --columns=method,uri | head -20
-
       - name: Run Migrations
         run: php artisan migrate --force
 
@@ -57,16 +50,7 @@ jobs:
         run: php artisan db:seed --force
 
       - name: Run Tests
-        run: php artisan test --verbose 2>&1 || true
-        continue-on-error: true
-
-      - name: Run Tests (strict)
-        run: php artisan test
-
-      - name: Validate Routes
-        run: |
-          php artisan route:list --columns=method,uri 2>&1 | head -30
-          echo "Routes validated successfully"
+        run: php artisan test --verbose
 
       - name: Validate Migrations
         run: |
