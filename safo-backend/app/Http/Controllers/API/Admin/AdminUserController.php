@@ -47,24 +47,33 @@ class AdminUserController extends Controller
 
     public function toggleStatus(User $user)
     {
+        // Prevent disabling yourself
+        if ($user->id === auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'لا يمكنك تعطيل حسابك'], 422);
+        }
+
         $newStatus = !$user->is_active;
         $user->update(['is_active' => $newStatus]);
 
-        // If disabling a supplier, also deactivate their supplier record and all products
+        // If disabling a supplier: deactivate supplier + products + revoke tokens
         if ($user->isSupplier() && !$newStatus) {
             if ($user->supplier) {
                 $user->supplier->update(['is_active' => false]);
                 $user->supplier->products()->update(['is_active' => false]);
             }
-            // Revoke all tokens
             $user->tokens()->delete();
         }
 
-        // If enabling a supplier, reactivate supplier record (products stay inactive for review)
+        // If enabling a supplier: reactivate supplier only (products stay inactive)
         if ($user->isSupplier() && $newStatus) {
             if ($user->supplier) {
                 $user->supplier->update(['is_active' => true]);
             }
+        }
+
+        // If disabling a customer: revoke tokens (orders preserved)
+        if ($user->isCustomer() && !$newStatus) {
+            $user->tokens()->delete();
         }
 
         return response()->json([

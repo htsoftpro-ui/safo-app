@@ -351,8 +351,17 @@ input:focus,select:focus,textarea:focus{border-color:#2563eb;background:white}
 </nav>
 
 <script>
-// ============ DATA ============
-const categories=[
+// ============ API CONFIG ============
+const API_BASE='https://safo-app.up.railway.app/api/v1';
+const CAT_ICONS={1:'fa-wheat-awn',2:'fa-mug-hot',3:'fa-spray-can',4:'fa-hand-sparkles',5:'fa-glass-water',6:'fa-cake-candles',7:'fa-fire',8:'fa-box-open',9:'fa-candy-bar',10:'fa-laptop',11:'fa-drumstick-bite',12:'fa-leaf'};
+const CAT_GRADIENTS={1:'linear-gradient(135deg,#f59e0b,#d97706)',2:'linear-gradient(135deg,#10b981,#059669)',3:'linear-gradient(135deg,#3b82f6,#2563eb)',4:'linear-gradient(135deg,#ec4899,#db2777)',5:'linear-gradient(135deg,#f97316,#ea580c)',6:'linear-gradient(135deg,#a855f7,#7c3aed)',7:'linear-gradient(135deg,#ef4444,#dc2626)',8:'linear-gradient(135deg,#6366f1,#4f46e5)',9:'linear-gradient(135deg,#14b8a6,#0d9488)',10:'linear-gradient(135deg,#64748b,#475569)',11:'linear-gradient(135deg,#dc2626,#991b1b)',12:'linear-gradient(135deg,#22c55e,#16a34a)'};
+const SUPP_COLORS=['#2563eb','#059669','#d97706','#7c3aed','#dc2626','#4f46e5','#0891b2','#db2777'];
+const PRODUCT_BGS=['#fef3c7','#fef9c3','#f0fdf4','#fef2f2','#dbeafe','#fff7ed','#ecfeff','#fdf2f8','#fce7f3','#e0e7ff','#d1fae5','#fee2e2'];
+const PRODUCT_ICONS=['fa-box','fa-cube','fa-droplet','fa-jar','fa-cookie','fa-bread-slice'];
+let useApi=false;
+
+// ============ STATIC FALLBACK DATA ============
+let categories=[
 {id:1,name:'مواد غذائية',icon:'fa-wheat-awn',gradient:'linear-gradient(135deg,#f59e0b,#d97706)'},
 {id:2,name:'مشروبات',icon:'fa-mug-hot',gradient:'linear-gradient(135deg,#10b981,#059669)'},
 {id:3,name:'منظفات',icon:'fa-spray-can',gradient:'linear-gradient(135deg,#3b82f6,#2563eb)'},
@@ -366,14 +375,14 @@ const categories=[
 {id:11,name:'لحوم ودواجن',icon:'fa-drumstick-bite',gradient:'linear-gradient(135deg,#dc2626,#991b1b)'},
 {id:12,name:'فواكه وخضروات',icon:'fa-leaf',gradient:'linear-gradient(135deg,#22c55e,#16a34a)'}
 ];
-const suppliers=[
+let suppliers=[
 {id:1,name:'شركة النور للتجارة',rating:4.9,verified:true,products:200,city:'صنعاء',delivery:300,freeAbove:5000,initial:'ن',color:'#2563eb'},
 {id:2,name:'سوبر ماركت الرائد',rating:4.8,verified:true,products:120,city:'صنعاء',delivery:500,freeAbove:10000,initial:'ر',color:'#059669'},
 {id:3,name:'بقالة الخير',rating:4.5,verified:true,products:85,city:'عدن',delivery:400,freeAbove:8000,initial:'خ',color:'#d97706'},
 {id:4,name:'مؤسسة البركة',rating:4.6,verified:false,products:65,city:'الحديدة',delivery:550,freeAbove:10000,initial:'ب',color:'#7c3aed'},
 {id:5,name:'مطعم اليمان',rating:4.2,verified:true,products:45,city:'تعز',delivery:600,freeAbove:12000,initial:'ي',color:'#dc2626'}
 ];
-const products=[
+let products=[
 {id:1,name:'زيت نباتي 1.5 لتر × 12',price:2500,compare:3000,unit:'كرتون',min:1,stock:150,sales:320,rating:4.7,ratings:45,cat:1,supplier:1,icon:'fa-droplet',bg:'#fef3c7'},
 {id:2,name:'أرز بسمتي 5 كجم',price:4500,compare:5000,unit:'كيس',min:1,stock:200,sales:280,rating:4.8,ratings:60,cat:1,supplier:1,icon:'fa-bowl-food',bg:'#fef9c3'},
 {id:3,name:'سكر 1 كرتون (12 كيس)',price:8000,compare:9000,unit:'كرتون',min:1,stock:80,sales:450,rating:4.9,ratings:90,cat:1,supplier:2,icon:'fa-cube',bg:'#f0fdf4'},
@@ -387,6 +396,53 @@ const products=[
 {id:11,name:'فلفل أسود مطحون 100 جرام',price:900,unit:'علبة',min:3,stock:150,sales:75,rating:4.5,ratings:22,cat:7,supplier:4,icon:'fa-pepper-hot',bg:'#fef2f2'},
 {id:12,name:'بسكويت كرتون (24 حبة)',price:2400,compare:2800,unit:'كرتون',min:1,stock:60,sales:320,rating:4.7,ratings:48,cat:9,supplier:1,icon:'fa-cookie',bg:'#fef9c3'}
 ];
+
+// ============ API LOADERS ============
+async function loadFromApi(){
+try{
+const[catRes,prodRes]=await Promise.all([
+fetch(API_BASE+'/categories'),
+fetch(API_BASE+'/products?per_page=50')
+]);
+if(!catRes.ok||!prodRes.ok)return false;
+const catData=await catRes.json();
+const prodData=await prodRes.json();
+if(catData.data&&catData.data.length){
+categories=catData.data.map((c,i)=>({
+id:c.id,name:c.name,
+icon:CAT_ICONS[c.id]||'fa-box',
+gradient:CAT_GRADIENTS[c.id]||CAT_GRADIENTS[(i%12)+1]
+}));
+}
+if(prodData.data&&prodData.data.length){
+const apiSupps=[];
+products=prodData.data.map((p,i)=>{
+const s=p.supplier||{};
+if(s.id&&!apiSupps.find(x=>x.id===s.id)){
+apiSupps.push({
+id:s.id,name:s.company_name||s.name||'مورد',
+rating:s.rating||0,verified:s.is_verified||false,
+products:0,city:'',delivery:0,freeAbove:0,
+initial:(s.company_name||s.name||'م')[0],color:SUPP_COLORS[apiSupps.length%SUPP_COLORS.length]
+});
+}
+return{
+id:p.id,name:p.name,price:p.price,
+compare:p.compare_price||null,unit:p.unit||'قطعة',
+min:p.min_order_quantity||1,stock:p.stock_quantity||0,
+sales:p.sales_count||0,rating:p.rating||0,
+ratings:p.total_ratings||0,
+cat:p.category_id||1,supplier:s.id||1,
+icon:PRODUCT_ICONS[i%PRODUCT_ICONS.length],
+bg:PRODUCT_BGS[i%PRODUCT_BGS.length]
+};
+});
+if(apiSupps.length)suppliers=apiSupps;
+}
+useApi=true;
+return true;
+}catch{return false}
+}
 
 let cart=[],wishlist=[],orders=[],isLoggedIn=false,currentUser=null,sliderIndex=0;
 
@@ -636,7 +692,8 @@ function goSearch(){const q=document.getElementById('home-search')?.value;if(q){
 function shareProduct(){showToast('تم نسخ رابط المنتج')}
 
 // ============ INIT ============
-function init(){
+async function init(){
+await loadFromApi();
 renderHomeCategories();
 renderFeatured();
 renderBestSellers();
@@ -644,7 +701,6 @@ renderNewArrivals();
 renderOffers();
 renderHomeSuppliers();
 initSlider();
-// Smart recommendations
 const recGrid=document.getElementById('recommendations-grid');
 if(recGrid)recGrid.innerHTML=getSmartRecommendations(6).map(renderProductCard).join('');
 const catSelect=document.getElementById('cat-filter');
