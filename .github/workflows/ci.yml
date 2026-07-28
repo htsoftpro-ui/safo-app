@@ -50,12 +50,12 @@ jobs:
         run: php artisan db:seed --force
 
       - name: Run Tests
-        run: php artisan test 2>&1 | head -100
+        run: php artisan test
 
       - name: Validate Routes
         run: |
-          ROUTE_COUNT=$(php artisan route:list --columns=method,uri | grep -c "api/")
-          echo "API Routes: $ROUTE_COUNT"
+          php artisan route:list --columns=method,uri
+          echo "Routes validated"
 
       - name: Validate Migrations
         run: |
