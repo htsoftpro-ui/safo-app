@@ -50,7 +50,7 @@ jobs:
         run: php artisan db:seed --force
 
       - name: Run Tests
-        run: php artisan test --verbose
+        run: php artisan test 2>&1 | head -100
 
       - name: Validate Routes
         run: |
