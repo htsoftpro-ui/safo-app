@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>صفو — لوحة الإدارة</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+*{font-family:'Noto Sans Arabic',sans-serif;margin:0;padding:0;box-sizing:border-box}
+body{background:#f1f5f9;min-height:100vh}
+.sidebar{width:260px;background:#0f172a;color:white;min-height:100vh;position:fixed;right:0;top:0;transition:transform .3s;z-index:40}
+.sidebar.hidden{transform:translateX(100%)}
+.sidebar a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:#94a3b8;text-decoration:none;font-size:14px;transition:all .2s}
+.sidebar a:hover,.sidebar a.active{background:#1e293b;color:white}
+.main{margin-right:260px;min-height:100vh;transition:margin .3s}
+.main.full{margin-right:0}
+.stat-card{background:white;border-radius:12px;padding:20px;border:1px solid #e2e8f0}
+.badge{display:inline-block;padding:3px 10px;border-radius:9999px;font-size:12px;font-weight:500}
+.badge-green{background:#dcfce7;color:#16a34a}.badge-blue{background:#dbeafe;color:#2563eb}
+.badge-red{background:#fee2e2;color:#dc2626}.badge-yellow{background:#fef9c3;color:#ca8a04}
+.badge-purple{background:#f3e8ff;color:#9333ea}
+.btn{padding:8px 16px;border-radius:8px;font-weight:500;border:none;cursor:pointer;font-size:13px}
+.btn-primary{background:#2563eb;color:white}.btn-primary:hover{background:#1d4ed8}
+.btn-danger{background:#dc2626;color:white}.btn-danger:hover{background:#b91c1c}
+.btn-sm{padding:6px 12px;font-size:12px}
+table{width:100%;border-collapse:collapse}
+th{text-align:right;padding:10px 12px;font-size:12px;color:#64748b;font-weight:500;border-bottom:1px solid #e2e8f0}
+td{padding:12px;font-size:13px;border-bottom:1px solid #f1f5f9}
+tr:hover{background:#f8fafc}
+.page{display:none}.page.active{display:block}
+input,select,textarea{width:100%;padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;outline:none}
+input:focus,select:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#16a34a;color:white;padding:12px 24px;border-radius:8px;z-index:200;display:none;font-weight:500}
+.toast.show{display:block}
+</style>
+</head>
+<body>
+<div id="toast" class="toast"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+<div style="padding:20px;border-bottom:1px solid #1e293b">
+<h1 style="font-size:20px;font-weight:700"><i class="fa-solid fa-store"></i> صفو</h1>
+<p style="font-size:12px;color:#64748b;margin-top:4px">لوحة الإدارة</p>
+</div>
+<nav style="padding:12px 0">
+<a onclick="showPage('dashboard')" class="active" data-page="dashboard"><i class="fa-solid fa-chart-pie"></i> لوحة التحكم</a>
+<a onclick="showPage('orders')" data-page="orders"><i class="fa-solid fa-cart-shopping"></i> الطلبات</a>
+<a onclick="showPage('users')" data-page="users"><i class="fa-solid fa-users"></i> المستخدمون</a>
+<a onclick="showPage('suppliers')" data-page="suppliers"><i class="fa-solid fa-store"></i> الموردون</a>
+<a onclick="showPage('products')" data-page="products"><i class="fa-solid fa-box"></i> المنتجات</a>
+<a onclick="showPage('coupons')" data-page="coupons"><i class="fa-solid fa-ticket"></i> الكوبونات</a>
+<a onclick="showPage('finance')" data-page="finance"><i class="fa-solid fa-coins"></i> المالية</a>
+<a onclick="showPage('support')" data-page="support"><i class="fa-solid fa-headset"></i> الدعم</a>
+</nav>
+<div style="position:absolute;bottom:0;left:0;right:0;padding:16px;border-top:1px solid #1e293b">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:36px;height:36px;background:#3b82f6;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">م</div>
+<div><p style="font-size:13px;font-weight:500">مدير النظام</p><p style="font-size:11px;color:#64748b">admin</p></div>
+</div>
+</div>
+</aside>
+
+<!-- Main Content -->
+<div class="main" id="main-content">
+<header style="background:white;border-bottom:1px solid #e2e8f0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30">
+<button onclick="toggleSidebar()" style="background:none;border:none;cursor:pointer;font-size:20px;display:none" id="menu-btn">☰</button>
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font-size:13px;color:#64748b">مرحباً، مدير النظام</span>
+</div>
+</header>
+
+<!-- Dashboard Page -->
+<div id="page-dashboard" class="page active" style="padding:24px">
+<h2 style="font-size:24px;font-weight:700;margin-bottom:24px">لوحة التحكم</h2>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:24px">
+<div class="stat-card"><p style="font-size:13px;color:#64748b">إجمالي المستخدمين</p><p style="font-size:32px;font-weight:700;color:#2563eb">1,247</p><p style="font-size:12px;color:#94a3b8">+23 اليوم</p></div>
+<div class="stat-card"><p style="font-size:13px;color:#64748b">الطلبات</p><p style="font-size:32px;font-weight:700;color:#16a34a">3,891</p><p style="font-size:12px;color:#94a3b8">12 اليوم</p></div>
+<div class="stat-card"><p style="font-size:13px;color:#64748b">المنتجات</p><p style="font-size:32px;font-weight:700;color:#9333ea">456</p><p style="font-size:12px;color:#94a3b8">89 نشط</p></div>
+<div class="stat-card"><p style="font-size:13px;color:#64748b">الإيرادات</p><p style="font-size:32px;font-weight:700;color:#ea580c">﷼ 2,450,000</p><p style="font-size:12px;color:#94a3b8">﷼ 320,000 هذا الشهر</p></div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+<div style="background:white;border-radius:12px;padding:20px;border:1px solid #e2e8f0">
+<h3 style="font-weight:700;margin-bottom:16px">حالات الطلبات</h3>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span class="badge badge-yellow">قيد المراجعة</span><span style="font-weight:700">18</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span class="badge badge-blue">مؤكد</span><span style="font-weight:700">24</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span class="badge badge-purple">قيد التجهيز</span><span style="font-weight:700">31</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span class="badge badge-blue">تم الشحن</span><span style="font-weight:700">15</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span class="badge badge-green">تم التوصيل</span><span style="font-weight:700">3,780</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span class="badge badge-red">ملغي</span><span style="font-weight:700">23</span></div>
+</div>
+</div>
+<div style="background:white;border-radius:12px;padding:20px;border:1px solid #e2e8f0">
+<h3 style="font-weight:700;margin-bottom:16px">أفضل الموردين</h3>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:center"><div><p style="font-weight:500;font-size:14px">شركة النور للتجارة</p><span style="font-size:12px;color:#eab308"><i class="fa-solid fa-star" style="color:#eab308"></i> 4.9</span></div><span style="font-weight:700">234 طلب</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><div><p style="font-weight:500;font-size:14px">سوبر ماركت الرائد</p><span style="font-size:12px;color:#eab308"><i class="fa-solid fa-star" style="color:#eab308"></i> 4.8</span></div><span style="font-weight:700">189 طلب</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><div><p style="font-weight:500;font-size:14px">مؤسسة البركة</p><span style="font-size:12px;color:#eab308"><i class="fa-solid fa-star" style="color:#eab308"></i> 4.6</span></div><span style="font-weight:700">156 طلب</span></div>
+</div>
+</div>
+</div>
+
+<div style="background:white;border-radius:12px;padding:20px;border:1px solid #e2e8f0">
+<h3 style="font-weight:700;margin-bottom:16px">آخر الطلبات</h3>
+<table>
+<thead><tr><th>رقم الطلب</th><th>العميل</th><th>المورد</th><th>الحالة</th><th>المبلغ</th><th>التاريخ</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:500">ORD-20260728-001</td><td>سالم أحمد</td><td>سوبر ماركت الرائد</td><td><span class="badge badge-yellow">قيد المراجعة</span></td><td style="font-weight:600">﷼ 12,500</td><td>منذ 5 دقائق</td></tr>
+<tr><td style="font-weight:500">ORD-20260728-002</td><td>فاطمة علي</td><td>شركة النور</td><td><span class="badge badge-blue">مؤكد</span></td><td style="font-weight:600">﷼ 8,300</td><td>منذ 15 دقيقة</td></tr>
+<tr><td style="font-weight:500">ORD-20260728-003</td><td>محمد خالد</td><td>بقالة الخير</td><td><span class="badge badge-green">تم التوصيل</span></td><td style="font-weight:600">﷼ 5,800</td><td>منذ ساعة</td></tr>
+<tr><td style="font-weight:500">ORD-20260728-004</td><td>نورة حسن</td><td>مؤسسة البركة</td><td><span class="badge badge-purple">قيد التجهيز</span></td><td style="font-weight:600">﷼ 15,200</td><td>منذ ساعتين</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- Orders Page -->
+<div id="page-orders" class="page" style="padding:24px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+<h2 style="font-size:24px;font-weight:700">الطلبات</h2>
+</div>
+<div style="background:white;border-radius:12px;padding:16px;border:1px solid #e2e8f0;margin-bottom:16px">
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<select style="width:auto;min-width:140px"><option>كل الحالات</option><option>قيد المراجعة</option><option>مؤكد</option><option>قيد التجهيز</option><option>تم الشحن</option><option>تم التوصيل</option><option>ملغي</option></select>
+<input type="date" style="width:auto">
+<input type="date" style="width:auto">
+<button class="btn btn-primary btn-sm">بحث</button>
+</div>
+</div>
+<div style="background:white;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+<table>
+<thead><tr><th>رقم الطلب</th><th>العميل</th><th>المورد</th><th>المنتجات</th><th>الحالة</th><th>الدفع</th><th>المبلغ</th><th>التاريخ</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:500">ORD-20260728-001</td><td>سالم أحمد</td><td>الرائد</td><td>3</td><td><span class="badge badge-yellow">قيد المراجعة</span></td><td><span class="badge badge-yellow">معلق</span></td><td style="font-weight:600">﷼ 12,500</td><td>28/07</td></tr>
+<tr><td style="font-weight:500">ORD-20260728-002</td><td>فاطمة علي</td><td>النور</td><td>5</td><td><span class="badge badge-blue">مؤكد</span></td><td><span class="badge badge-green">مدفوع</span></td><td style="font-weight:600">﷼ 8,300</td><td>28/07</td></tr>
+<tr><td style="font-weight:500">ORD-20260727-015</td><td>محمد خالد</td><td>الخير</td><td>2</td><td><span class="badge badge-green">تم التوصيل</span></td><td><span class="badge badge-green">مدفوع</span></td><td style="font-weight:600">﷼ 5,800</td><td>27/07</td></tr>
+<tr><td style="font-weight:500">ORD-20260727-014</td><td>نورة حسن</td><td>البركة</td><td>8</td><td><span class="badge badge-purple">قيد التجهيز</span></td><td><span class="badge badge-yellow">معلق</span></td><td style="font-weight:600">﷼ 15,200</td><td>27/07</td></tr>
+<tr><td style="font-weight:500">ORD-20260727-013</td><td>يوسف أحمد</td><td>الرائد</td><td>1</td><td><span class="badge badge-red">ملغي</span></td><td><span class="badge badge-red">مسترد</span></td><td style="font-weight:600">﷼ 3,200</td><td>27/07</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- Users Page -->
+<div id="page-users" class="page" style="padding:24px">
+<h2 style="font-size:24px;font-weight:700;margin-bottom:20px">المستخدمون</h2>
+<div style="background:white;border-radius:12px;padding:16px;border:1px solid #e2e8f0;margin-bottom:16px">
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<input type="text" placeholder="بحث..." style="flex:1;min-width:200px">
+<select style="width:auto"><option>كل الأنواع</option><option>عملاء</option><option>موردون</option><option>مشرفون</option></select>
+<select style="width:auto"><option>كل الحالات</option><option>نشط</option><option>معطل</option></select>
+</div>
+</div>
+<div style="background:white;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+<table>
+<thead><tr><th>الاسم</th><th>الهاتف</th><th>النوع</th><th>المدينة</th><th>الحالة</th><th>التحقق</th><th>إجراءات</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:500">مدير النظام</td><td>770000001</td><td><span class="badge badge-purple">مدير</span></td><td>صنعاء</td><td><span class="badge badge-green">نشط</span></td><td><i class="fa-solid fa-check"></i></td><td>—</td></tr>
+<tr><td style="font-weight:500">محمد_supply</td><td>771000001</td><td><span class="badge badge-blue">مورد</span></td><td>صنعاء</td><td><span class="badge badge-green">نشط</span></td><td><i class="fa-solid fa-check"></i></td><td><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626">تعطيل</button></td></tr>
+<tr><td style="font-weight:500">سالم_customer</td><td>772000001</td><td><span class="badge badge-green">عميل</span></td><td>صنعاء</td><td><span class="badge badge-green">نشط</span></td><td><i class="fa-solid fa-check"></i></td><td><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626">تعطيل</button></td></tr>
+<tr><td style="font-weight:500">فاطمة_customer</td><td>772000002</td><td><span class="badge badge-green">عميل</span></td><td>عدن</td><td><span class="badge badge-green">نشط</span></td><td><i class="fa-solid fa-check"></i></td><td><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626">تعطيل</button></td></tr>
+<tr><td style="font-weight:500">أحمد_supply</td><td>771000002</td><td><span class="badge badge-blue">مورد</span></td><td>عدن</td><td><span class="badge badge-green">نشط</span></td><td><i class="fa-solid fa-check"></i></td><td><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626">تعطيل</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- Suppliers Page -->
+<div id="page-suppliers" class="page" style="padding:24px">
+<h2 style="font-size:24px;font-weight:700;margin-bottom:20px">الموردون</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+<div style="background:white;border-radius:12px;padding:20px;border:1px solid #e2e8f0">
+<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:48px;height:48px;background:#dbeafe;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#2563eb">ن</div>
+<div><p style="font-weight:700">شركة النور للتجارة</p><span style="font-size:12px;color:#eab308"><i class="fa-solid fa-star" style="color:#eab308"></i> 4.9</span> <span class="badge badge-green" style="font-size:10px">موثق</span></div>
+</div>
+</div>
+<p style="font-size:13px;color:#64748b;margin-bottom:8px">200 منتج • صنعاء</p>
+<p style="font-size:13px;color:#64748b">234 طلب • ﷼ 450,000 إيرادات</p>
+<div style="display:flex;gap:8px;margin-top:12px">
+<button class="btn btn-primary btn-sm">عرض</button>
+<button class="btn btn-sm" style="background:#fee2e2;color:#dc2626">تعطيل</button>
+</div>
+</div>
+<div style="background:white;border-radius:12px;padding:20px;border:1px solid #e2e8f0">
+<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:48px;height:48px;background:#dbeafe;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#2563eb">ر</div>
+<div><p style="font-weight:700">سوبر ماركت الرائد</p><span style="font-size:12px;color:#eab308"><i class="fa-solid fa-star" style="color:#eab308"></i> 4.8</span> <span class="badge badge-green" style="font-size:10px">موثق</span></div>
+</div>
+</div>
+<p style="font-size:13px;color:#64748b;margin-bottom:8px">120 منتج • صنعاء</p>
+<p style="font-size:13px;color:#64748b">189 طلب • ﷼ 320,000 إيرادات</p>
+<div style="display:flex;gap:8px;margin-top:12px">
+<button class="btn btn-primary btn-sm">عرض</button>
+<button class="btn btn-sm" style="background:#fee2e2;color:#dc2626">تعطيل</button>
+</div>
+</div>
+<div style="background:white;border-radius:12px;padding:20px;border:1px solid #e2e8f0">
+<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:48px;height:48px;background:#fef9c3;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#ca8a04">ب</div>
+<div><p style="font-weight:700">مؤسسة البركة</p><span style="font-size:12px;color:#eab308"><i class="fa-solid fa-star" style="color:#eab308"></i> 4.6</span> <span class="badge badge-yellow" style="font-size:10px">غير موثق</span></div>
+</div>
+</div>
+<p style="font-size:13px;color:#64748b;margin-bottom:8px">65 منتج • الحديدة</p>
+<p style="font-size:13px;color:#64748b">156 طلب • ﷼ 180,000 إيرادات</p>
+<div style="display:flex;gap:8px;margin-top:12px">
+<button class="btn btn-primary btn-sm">عرض</button>
+<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a">توثيق</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Coupons Page -->
+<div id="page-coupons" class="page" style="padding:24px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+<h2 style="font-size:24px;font-weight:700">الكوبونات</h2>
+<button class="btn btn-primary" onclick="document.getElementById('coupon-modal').classList.add('open')">+ كوبون جديد</button>
+</div>
+<div style="background:white;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+<table>
+<thead><tr><th>الكود</th><th>النوع</th><th>القيمة</th><th>الحد الأدنى</th><th>الاستخدام</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:700;font-family:monospace">SAFO10</td><td>نسبة</td><td>10%</td><td>﷼ 5,000</td><td>45/100</td><td><span class="badge badge-green">نشط</span></td><td><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626">حذف</button></td></tr>
+<tr><td style="font-weight:700;font-family:monospace">WELCOME500</td><td>ثابت</td><td>﷼ 500</td><td>﷼ 3,000</td><td>120/∞</td><td><span class="badge badge-green">نشط</span></td><td><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626">حذف</button></td></tr>
+<tr><td style="font-weight:700;font-family:monospace">RAMADAN20</td><td>نسبة</td><td>20%</td><td>﷼ 10,000</td><td>200/200</td><td><span class="badge badge-red">منتهي</span></td><td><button class="btn btn-sm" style="background:#fee2e2;color:#dc2626">حذف</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- Finance Page -->
+<div id="page-finance" class="page" style="padding:24px">
+<h2 style="font-size:24px;font-weight:700;margin-bottom:20px">المالية</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px">
+<div class="stat-card"><p style="font-size:13px;color:#64748b">إجمالي العمولات</p><p style="font-size:28px;font-weight:700;color:#2563eb">﷼ 245,000</p></div>
+<div class="stat-card"><p style="font-size:13px;color:#64748b">عمولات معلقة</p><p style="font-size:28px;font-weight:700;color:#ea580c">﷼ 32,000</p></div>
+<div class="stat-card"><p style="font-size:13px;color:#64748b">تسويات مكتملة</p><p style="font-size:28px;font-weight:700;color:#16a34a">48</p></div>
+<div class="stat-card"><p style="font-size:13px;color:#64748b">تسويات معلقة</p><p style="font-size:28px;font-weight:700;color:#ca8a04">5</p></div>
+</div>
+<div style="background:white;border-radius:12px;padding:20px;border:1px solid #e2e8f0">
+<h3 style="font-weight:700;margin-bottom:16px">آخر التسويات</h3>
+<table>
+<thead><tr><th>المورد</th><th>عدد الطلبات</th><th>المبلغ</th><th>العمولة</th><th>الصافي</th><th>الحالة</th></tr></thead>
+<tbody>
+<tr><td>شركة النور</td><td>12</td><td>﷼ 45,000</td><td>﷼ 4,500</td><td style="font-weight:600;color:#16a34a">﷼ 40,500</td><td><span class="badge badge-green">مكتمل</span></td></tr>
+<tr><td>سوبر ماركت الرائد</td><td>8</td><td>﷼ 28,000</td><td>﷼ 2,800</td><td style="font-weight:600;color:#16a34a">﷼ 25,200</td><td><span class="badge badge-yellow">معلق</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- Support Page -->
+<div id="page-support" class="page" style="padding:24px">
+<h2 style="font-size:24px;font-weight:700;margin-bottom:20px">تذاكر الدعم</h2>
+<div style="background:white;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+<table>
+<thead><tr><th>الموضوع</th><th>العميل</th><th>التصنيف</th><th>الأولوية</th><th>الحالة</th><th>التاريخ</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:500">لم يصل الطلب</td><td>سالم أحمد</td><td>توصيل</td><td><span class="badge badge-red">عاجل</span></td><td><span class="badge badge-yellow">مفتوحة</span></td><td>28/07</td></tr>
+<tr><td style="font-weight:500">منتج تالف</td><td>فاطمة علي</td><td>منتج</td><td><span class="badge badge-yellow">متوسطة</span></td><td><span class="badge badge-blue">قيد المعالجة</span></td><td>27/07</td></tr>
+<tr><td style="font-weight:500">استفسار عن الدفع الآجل</td><td>محمد خالد</td><td>دفع</td><td><span class="badge badge-green">منخفضة</span></td><td><span class="badge badge-green">محلولة</span></td><td>26/07</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- Products Page -->
+<div id="page-products" class="page" style="padding:24px">
+<h2 style="font-size:24px;font-weight:700;margin-bottom:20px">المنتجات</h2>
+<div style="background:white;border-radius:12px;padding:16px;border:1px solid #e2e8f0;margin-bottom:16px">
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<input type="text" placeholder="بحث..." style="flex:1;min-width:200px">
+<select style="width:auto"><option>كل الحالات</option><option>نشط</option><option>غير نشط</option></select>
+<select style="width:auto"><option>كل الموردين</option><option>النور</option><option>الرائد</option><option>الخير</option></select>
+</div>
+</div>
+<div style="background:white;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+<table>
+<thead><tr><th>المنتج</th><th>المورد</th><th>السعر</th><th>المخزون</th><th>المبيعات</th><th>التقييم</th><th>الحالة</th></tr></thead>
+<tbody>
+<tr><td><i class="fa-solid fa-droplet"></i> زيت نباتي 1.5 لتر</td><td>الرائد</td><td>﷼ 2,500</td><td>150</td><td>320</td><td><i class="fa-solid fa-star" style="color:#eab308"></i> 4.7</td><td><span class="badge badge-green">نشط</span></td></tr>
+<tr><td><i class="fa-solid fa-bowl-food"></i> أرز بسمتي 5 كجم</td><td>الرائد</td><td>﷼ 4,500</td><td>200</td><td>280</td><td><i class="fa-solid fa-star" style="color:#eab308"></i> 4.8</td><td><span class="badge badge-green">نشط</span></td></tr>
+<tr><td><i class="fa-solid fa-candy-bar"></i> سكر 1 كرتون</td><td>النور</td><td>﷼ 8,000</td><td>80</td><td>450</td><td><i class="fa-solid fa-star" style="color:#eab308"></i> 4.9</td><td><span class="badge badge-green">نشط</span></td></tr>
+<tr><td><i class="fa-solid fa-mug-hot"></i> شاي أحمر 500 جرام</td><td>الخير</td><td>﷼ 1,800</td><td>300</td><td>210</td><td><i class="fa-solid fa-star" style="color:#eab308"></i> 4.5</td><td><span class="badge badge-green">نشط</span></td></tr>
+<tr><td><i class="fa-solid fa-broom"></i> مسحوق غسيل 3 كجم</td><td>النور</td><td>﷼ 3,500</td><td>5</td><td>180</td><td><i class="fa-solid fa-star" style="color:#eab308"></i> 4.3</td><td><span class="badge badge-yellow">مخزون منخفض</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+<!-- Coupon Modal -->
+<div class="modal" id="coupon-modal">
+<div style="background:white;border-radius:16px;padding:24px;width:90%;max-width:450px">
+<h3 style="font-size:18px;font-weight:700;margin-bottom:16px">إضافة كوبون جديد</h3>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div><label style="font-size:13px;font-weight:500;display:block;margin-bottom:4px">الكود</label><input type="text" placeholder="SAFO10" style="font-family:monospace"></div>
+<div><label style="font-size:13px;font-weight:500;display:block;margin-bottom:4px">النوع</label><select><option value="percentage">نسبة مئوية</option><option value="fixed">مبلغ ثابت</option></select></div>
+<div><label style="font-size:13px;font-weight:500;display:block;margin-bottom:4px">القيمة</label><input type="number" placeholder="10"></div>
+<div><label style="font-size:13px;font-weight:500;display:block;margin-bottom:4px">الحد الأدنى للطلب</label><input type="number" placeholder="5000"></div>
+<div><label style="font-size:13px;font-weight:500;display:block;margin-bottom:4px">عدد مرات الاستخدام</label><input type="number" placeholder="100"></div>
+<div><label style="font-size:13px;font-weight:500;display:block;margin-bottom:4px">تاريخ الانتهاء</label><input type="date"></div>
+</div>
+<div style="display:flex;gap:8px;margin-top:20px">
+<button class="btn btn-primary" style="flex:1" onclick="document.getElementById('coupon-modal').classList.remove('open');showToast('تم إنشاء الكوبون <i class="fa-solid fa-check"></i>')">إنشاء</button>
+<button class="btn" style="flex:1;background:#f1f5f9" onclick="document.getElementById('coupon-modal').classList.remove('open')">إلغاء</button>
+</div>
+</div>
+</div>
+
+<script>
+function showPage(page) {
+document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+const el = document.getElementById('page-' + page);
+if (el) el.classList.add('active');
+document.querySelectorAll('.sidebar a').forEach(a => {
+a.classList.remove('active');
+if (a.dataset.page === page) a.classList.add('active');
+});
+}
+
+function toggleSidebar() {
+document.getElementById('sidebar').classList.toggle('hidden');
+document.getElementById('main-content').classList.toggle('full');
+}
+
+function showToast(msg) {
+const t = document.getElementById('toast');
+t.textContent = msg; t.classList.add('show');
+setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function handleResize() {
+const isMobile = window.innerWidth < 768;
+document.getElementById('menu-btn').style.display = isMobile ? 'block' : 'none';
+if (isMobile) { document.getElementById('sidebar').classList.add('hidden'); document.getElementById('main-content').classList.add('full'); }
+else { document.getElementById('sidebar').classList.remove('hidden'); document.getElementById('main-content').classList.remove('full'); }
+}
+window.addEventListener('resize', handleResize);
+handleResize();
+</script>
+</body>
+</html>

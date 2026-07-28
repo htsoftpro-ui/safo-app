@@ -20,8 +20,8 @@ jobs:
       - name: Build combined site
         run: |
           mkdir -p _site/supplier _site/admin
-          cp safo-supplier-dashboard/dist/index.html _site/supplier/index.html
-          cp safo-admin-dashboard/dist/index.html _site/admin/index.html
+          cp safo-supplier-dashboard/public/index.html _site/supplier/index.html
+          cp safo-admin-dashboard/public/index.html _site/admin/index.html
           cp safo-customer-web/index.html _site/index.html
 
       - name: Upload artifact
