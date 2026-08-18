@@ -126,9 +126,11 @@ function App() {
         const response = await fetch(PMTILES_URL, { method: 'HEAD', cache: 'no-store' });
         if (response.ok) {
           setPackAvailable(true);
-          const demResponse = await fetch(`${DATA_ROOT}dem/manifest.json`, { method: 'HEAD', cache: 'no-store' });
-          setDemAvailable(demResponse.ok);
-          setLocationStatus(demResponse.ok ? 'حزمة اليمن والتضاريس المحلية متاحة' : 'حزمة اليمن المحلية متاحة — أضف حزمة DEM لتفعيل التضاريس');
+          const demResponse = await fetch(`${DATA_ROOT}dem/manifest.json`, { cache: 'no-store' });
+          const demType = demResponse.headers.get('content-type') ?? '';
+          const hasDemManifest = demResponse.ok && demType.toLowerCase().includes('json');
+          setDemAvailable(hasDemManifest);
+          setLocationStatus(hasDemManifest ? 'حزمة اليمن والتضاريس المحلية متاحة' : 'حزمة اليمن المحلية متاحة — أضف حزمة DEM لتفعيل التضاريس');
         } else {
           setLocationStatus('وضع المعاينة المحلية — أضف حزمة البيانات لتفعيل التفاصيل الكاملة');
         }
