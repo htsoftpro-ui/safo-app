@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة إدارة شاعر</title>
+  <style>
+    :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#100d2e;color:#f8f7ff;font-family:Tahoma,Arial,sans-serif;min-height:100vh}.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:rgba(16,13,46,.94);border-bottom:1px solid #3d376a;backdrop-filter:blur(14px)}.brand{font-weight:800;font-size:18px}.brand small{display:block;color:#a9a1d7;font-size:11px;margin-top:4px}.links{display:flex;gap:10px;align-items:center}.links a{color:#fff;text-decoration:none;border:1px solid #554b89;border-radius:10px;padding:9px 14px;background:#211b4b}.links a:hover{background:#302568}.sync{font-size:12px;color:#8ee9bc;display:flex;align-items:center;gap:7px}.sync:before{content:'';width:8px;height:8px;background:#58e09b;border-radius:50%;box-shadow:0 0 12px #58e09b}.frame{width:100%;height:calc(100vh - 76px);border:0;background:#100d2e}
+  </style>
+</head>
+<body>
+  <header class="top"><div class="brand">شاعر <small>مركز القيادة المستقل</small></div><div class="sync">مزامنة فورية مع الموقع</div><nav class="links"><a href="./index.html">العودة إلى الاستوديو</a></nav></header>
+  <iframe class="frame" src="./index.html#admin" title="لوحة إدارة شاعر"></iframe>
+</body>
+</html>
+
+<!-- هذه الصفحة تستخدم نفس أصل الموقع وlocalStorage، ويجري التزامن بين الإطار والموقع عبر BroadcastChannel/storage. -->
