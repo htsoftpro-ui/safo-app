@@ -1,0 +1,3 @@
+public/data/*.mbtiles
+node_modules
+dist

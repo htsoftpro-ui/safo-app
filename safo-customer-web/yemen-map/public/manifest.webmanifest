@@ -1,0 +1,11 @@
+{
+  "name": "خريطة اليمن Offline",
+  "short_name": "يمن Map",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#dfe8e3",
+  "theme_color": "#0f766e",
+  "dir": "rtl",
+  "lang": "ar",
+  "description": "خريطة اليمن التفاعلية ببيانات مفتوحة وتشغيل محلي دون اتصال"
+}
