@@ -12,7 +12,7 @@
 
 .command-center{margin-top:22px}.command-shell{background:linear-gradient(135deg,#fff,#fbfaff);border:1px solid #e8e3ff;border-radius:18px;padding:23px;box-shadow:var(--shadow)}.command-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;margin-bottom:16px}.command-head h3{margin:0;font-size:17px}.command-head p{margin:6px 0 0;color:var(--muted);font-size:11px;line-height:1.8}.command-badge{background:#eeeaff;color:#5a49bc;padding:8px 11px;border-radius:9px;font-size:10px;white-space:nowrap}.command-layout{display:grid;grid-template-columns:1.35fr .65fr;gap:15px}.command-editor{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px}.command-editor textarea{height:155px}.command-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.command-toolbar select{flex:1;min-width:160px}.command-run{background:linear-gradient(100deg,#715ee0,#5744c6);color:#fff;border-radius:10px;padding:10px 15px;font-size:11px;font-weight:700}.command-actions{display:flex;gap:8px;align-items:center;margin-top:10px}.command-actions .ghost{font-size:10px}.command-status{font-size:10px;color:var(--muted);margin-right:auto}.prompt-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.prompt-card{border:1px solid var(--line);background:#fff;border-radius:11px;padding:11px;text-align:right;color:var(--ink);transition:.2s}.prompt-card:hover{border-color:#c9c0ff;background:#faf9ff;transform:translateY(-1px)}.prompt-card b{display:block;font-size:11px;color:#5141aa}.prompt-card small{display:block;color:var(--muted);font-size:9px;line-height:1.6;margin-top:4px}.command-result{margin-top:14px;border:1px solid #e8e1cf;border-radius:13px;background:#fffdf8;padding:15px;display:none}.command-result.show{display:block}.command-result-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee8d9;padding-bottom:9px;margin-bottom:10px}.command-result-title{font:700 17px 'Playfair Display',serif}.command-result-meta{font-size:10px;color:var(--muted)}.command-output{white-space:pre-line;line-height:2;font-size:14px;color:#303548}.command-diff{display:inline-block;background:#e8f9f0;color:#1b8a61;padding:4px 8px;border-radius:6px;font-size:9px;margin-bottom:9px}@media(max-width:760px){.command-layout{grid-template-columns:1fr}.command-head{display:block}.command-badge{display:inline-block;margin-top:10px}}
 </style>
-</head>
+<script src="prosody-engine.js"></script></head>
 <body>
 <div class="app">
 <aside class="sidebar">
@@ -83,6 +83,20 @@
     </div>
   </div>
 </section>
+
+<section class="card prosody-lab" id="prosodyLab" style="margin:28px 0;padding:24px;background:linear-gradient(135deg,#17162b,#242044);color:#fff;border-radius:24px;box-shadow:0 16px 40px rgba(25,18,60,.18)">
+  <div style="display:flex;justify-content:space-between;gap:18px;align-items:flex-start;flex-wrap:wrap">
+    <div><span style="color:#b7a6ff;font-size:12px;letter-spacing:.12em">المحرك الحتمي</span><h2 style="margin:6px 0 8px">مختبر التقطيع والوزن</h2><p style="margin:0;color:#c9c4dd">يطبّع النص، يقدّر المقاطع الصوتية، يفحص ثبات الروي، ويقترح بوابة جودة قبل اعتماد أي مسودة.</p></div>
+    <span id="engineBadge" style="padding:8px 12px;border:1px solid #6d5ac8;border-radius:999px;color:#dcd5ff">جاهز محليًا</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1.4fr .8fr;gap:16px;margin-top:18px">
+    <textarea id="prosodyText" rows="6" style="width:100%;box-sizing:border-box;background:#0f0e1c;color:#fff;border:1px solid #4a416e;border-radius:14px;padding:14px;line-height:1.9" placeholder="ألصق أبياتك هنا…">يا مكحّلٍ في الرياض ارفق بحالي
+خلّيت قلبي لك ولا عاد لي غالي
+يا زين يا اللي حضورك عيد ليالي</textarea>
+    <div style="display:grid;gap:10px;align-content:start"><select id="prosodyMeter" style="padding:12px;border-radius:12px;background:#0f0e1c;color:#fff;border:1px solid #4a416e"><option>المتدارك</option><option>الرجز</option><option>الوافر</option><option>المتقارب</option><option>الطويل</option><option>البسيط</option><option>الكامل</option><option>الرمل</option></select><button id="runProsody" style="padding:12px;border:0;border-radius:12px;background:#9d83ff;color:#151126;font-weight:800;cursor:pointer">حلّل النص حتميًا</button><button id="copyProsody" style="padding:12px;border:1px solid #5e5193;border-radius:12px;background:transparent;color:#fff;cursor:pointer">انسخ التقرير</button></div>
+  </div>
+  <pre id="prosodyReport" style="white-space:pre-wrap;background:#0d0c17;padding:16px;border-radius:14px;color:#ded8f5;margin:16px 0 0;line-height:1.8">بانتظار التحليل…</pre>
+</section>
 </main></div><div class="toast" id="toast"></div>
 <script>
 const chips=document.querySelectorAll('.chip');chips.forEach(c=>c.addEventListener('click',()=>{chips.forEach(x=>x.classList.remove('selected'));c.classList.add('selected')}));
@@ -138,4 +152,14 @@ if(mode==='shorten')return `${first}\nيا زين يا اللي في حضورك 
 return `${t}\n\n[كوبليه إضافي]\nيا وقت زِد في حكايتنا من الألحان\nخلّ المعاني تكبر وتبقى على البال\n\n[جسر]\nإن كان للفرحة طريق، نمشيه سوا\nوإن طال درب الشوق، ما نرضى بالفصال`}
 function runCommand(){const mode=commandMode.value,text=commandInput.value;commandRun.disabled=true;commandStatus.textContent='يفهم الطلب ويطبق القيود...';commandResult.classList.add('show');commandResultTitle.textContent=commandModes[mode];commandResultMeta.textContent=`${mode==='gulf'?'خليجي عامي':mode==='meter'?'تحليل عروضي وإصلاح': 'تحرير إبداعي'} · مع الحفاظ على السياق`;setTimeout(()=>{commandOutput.textContent=commandGenerate(mode,text);commandStatus.textContent='اكتمل التنفيذ — النتيجة قابلة للتعديل';commandRun.disabled=false;toast('تم تنفيذ الأمر وإنتاج نتيجة جديدة');commandResult.scrollIntoView({behavior:'smooth',block:'nearest'});},520)}
 commandRun.addEventListener('click',runCommand);document.querySelectorAll('.prompt-card').forEach(b=>b.addEventListener('click',()=>{commandMode.value=b.dataset.mode;runCommand()}));document.getElementById('useAsIdea').addEventListener('click',()=>{document.getElementById('idea').value=commandInput.value;document.getElementById('idea').scrollIntoView({behavior:'smooth',block:'center'});toast('تم نقل النص إلى فكرة الأغنية')});document.getElementById('copyCommandResult').addEventListener('click',()=>{navigator.clipboard?.writeText(commandOutput.textContent);toast('تم نسخ النتيجة')});
-</script></body></html>
+</script>
+<script>
+(function(){
+  const run=document.getElementById('runProsody'); if(!run || !window.ShaerProsody) return;
+  const text=document.getElementById('prosodyText'), meter=document.getElementById('prosodyMeter'), report=document.getElementById('prosodyReport'), copy=document.getElementById('copyProsody');
+  let last='';
+  function render(){ const r=ShaerProsody.evaluate(text.value,meter.value); last=`تقرير مختبر شاعر\nالبحر: ${r.meter}\nالأسطر: ${r.rows.length}\nالمقاطع المقدّرة: ${r.rows.reduce((a,x)=>a+x.syllables,0)}\nمتوسط المورا: ${r.rows.length?(r.rows.reduce((a,x)=>a+x.morae,0)/r.rows.length).toFixed(1):0}\nثبات الوزن: ${r.meterScore}%\nثبات الروي: ${r.rhymeScore}%\nالروي الغالب: ${r.dominantRhyme||'—'}\nالحكم: ${r.verdict}\n\n${r.rows.map((x,i)=>`${i+1}. ${x.text} | ${x.syllables} مقطع | ${x.pattern}`).join('\n')}\n\nملاحظة: ${r.note}`; report.textContent=last; }
+  run.addEventListener('click',render); copy.addEventListener('click',()=>{navigator.clipboard?.writeText(last); if(typeof toast==='function')toast('تم نسخ تقرير العروض');}); render();
+})();
+</script>
+</body></html>
