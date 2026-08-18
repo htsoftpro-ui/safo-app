@@ -79,16 +79,22 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [terrainEnabled, setTerrainEnabled] = useState(true);
   const [layersOpen, setLayersOpen] = useState(false);
+  const [layerVisibility, setLayerVisibility] = useState({ water: true, roads: true, buildings: true, places: true });
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [searchIndex, setSearchIndex] = useState<SearchItem[]>(fallbackPlaces);
   const [selected, setSelected] = useState<{ name?: string; type?: string; lng?: number; lat?: number } | null>(null);
   const [locationStatus, setLocationStatus] = useState('بيانات محلية جاهزة');
 
   const searchResults = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    if (!normalized) return fallbackPlaces.slice(0, 6);
-    return fallbackPlaces.filter((item) => [item.name, ...(item.aliases ?? [])].join(' ').toLowerCase().includes(normalized)).slice(0, 8);
-  }, [query]);
+    if (!normalized) return searchIndex.slice(0, 8);
+    return searchIndex.filter((item) => [item.name, ...(item.aliases ?? [])].join(' ').toLowerCase().includes(normalized)).slice(0, 10);
+  }, [query, searchIndex]);
+
+  useEffect(() => {
+    fetch(`${DATA_ROOT}search-index.json`, { cache: 'force-cache' }).then((response) => response.ok ? response.json() : []).then((items: SearchItem[]) => { if (Array.isArray(items) && items.length) setSearchIndex(items); }).catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     if (!mapContainer.current || mapRef.current) return;
@@ -160,6 +166,18 @@ function App() {
     }
   }, [terrainEnabled, demAvailable, mapReady]);
 
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+    const setVisibility = (ids: string[], visible: boolean) => ids.forEach((id) => map.getLayer(id) && map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none'));
+    setVisibility(['water', 'waterway'], layerVisibility.water);
+    setVisibility(['roads-major-casing', 'roads-major'], layerVisibility.roads);
+    setVisibility(['buildings'], layerVisibility.buildings);
+    setVisibility(['places', 'place-dots'], layerVisibility.places);
+  }, [layerVisibility, mapReady]);
+
+  const toggleLayer = (key: keyof typeof layerVisibility) => setLayerVisibility((current) => ({ ...current, [key]: !current[key] }));
+
   const flyTo = (item: SearchItem) => {
     mapRef.current?.flyTo({ center: [item.lng, item.lat], zoom: 12.5, duration: 1100, essential: true });
     setSearchOpen(false);
@@ -197,7 +215,7 @@ function App() {
     <div className="map-tools glass">
       <button onClick={reset} title="عرض اليمن"><RotateCcw size={18} /></button><button onClick={locate} title="تحديد الموقع"><LocateFixed size={18} /></button><button onClick={() => setTerrainEnabled((value) => !value)} className={terrainEnabled && demAvailable ? 'active' : ''} title={demAvailable ? 'التضاريس' : 'التضاريس — تحتاج حزمة DEM محلية'}><Mountain size={18} /></button><button onClick={() => setLayersOpen((value) => !value)} className={layersOpen ? 'active' : ''} title="الطبقات"><Layers3 size={18} /></button>
     </div>
-    {layersOpen && <section className="layer-panel glass"><div className="panel-title"><span>طبقات الخريطة</span><button onClick={() => setLayersOpen(false)}><X size={16} /></button></div><label><input type="checkbox" checked readOnly /><MapIcon size={16} /> خريطة الأساس</label><label><input type="checkbox" checked={terrainEnabled} onChange={(event) => setTerrainEnabled(event.target.checked)} /><Mountain size={16} /> التضاريس و Hillshade</label><label><input type="checkbox" checked readOnly /><Route size={16} /> الطرق والمسارات</label><label><input type="checkbox" checked readOnly /><Building2 size={16} /> المباني المتوفرة</label><div className="panel-note"><Info size={14} /> تُعرض التفاصيل وفق مستوى التكبير وتوفرها في بيانات OSM.</div></section>}
+    {layersOpen && <section className="layer-panel glass"><div className="panel-title"><span>طبقات الخريطة</span><button onClick={() => setLayersOpen(false)}><X size={16} /></button></div><label><input type="checkbox" checked readOnly /><MapIcon size={16} /> خريطة الأساس</label><label><input type="checkbox" checked={terrainEnabled} onChange={(event) => setTerrainEnabled(event.target.checked)} /><Mountain size={16} /> التضاريس و Hillshade</label><label><input type="checkbox" checked={layerVisibility.roads} onChange={() => toggleLayer('roads')} /><Route size={16} /> الطرق والمسارات</label><label><input type="checkbox" checked={layerVisibility.buildings} onChange={() => toggleLayer('buildings')} /><Building2 size={16} /> المباني المتوفرة</label><label><input type="checkbox" checked={layerVisibility.water} onChange={() => toggleLayer('water')} /><MapIcon size={16} /> المياه والسواحل</label><label><input type="checkbox" checked={layerVisibility.places} onChange={() => toggleLayer('places')} /><MapPinned size={16} /> الأماكن والتسميات</label><div className="panel-note"><Info size={14} /> تُعرض التفاصيل وفق مستوى التكبير وتوفرها في بيانات OSM.</div></section>}
     {selected && <section className="feature-card glass"><button className="close-feature" onClick={() => setSelected(null)}><X size={15} /></button><span className="feature-kicker">معلومة من الخريطة</span><h2>{selected.name}</h2><p>{selected.type}</p>{selected.lat && selected.lng && <code>{selected.lat.toFixed(5)}°، {selected.lng.toFixed(5)}°</code>}</section>}
     <footer className="map-footer"><span>© OpenStreetMap contributors · بيانات مفتوحة مرخصة ODbL</span><span className="data-badge"><WifiOff size={13} /> Local-first</span></footer>
   </main>;
