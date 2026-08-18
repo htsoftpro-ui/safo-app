@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "name": "Shaer Arabic Songwriting Knowledge Base",
+  "language": "ar",
+  "scope": "prosody, rhyme, songcraft, maqamat, dialects, licensed_corpora",
+  "meters": [
+    {"id":"tawil","name":"الطويل","pattern":"فعولن مفاعيلن فعولن مفاعلن","feet":["فعولن","مفاعيلن","فعولن","مفاعلن"],"family":"خليلية","tags":["فخم","قصصي","كلاسيكي"]},
+    {"id":"basit","name":"البسيط","pattern":"مستفعلن فاعلن مستفعلن فاعلن","feet":["مستفعلن","فاعلن","مستفعلن","فاعلن"],"family":"خليلية","tags":["سردي","مرن"]},
+    {"id":"wafir","name":"الوافر","pattern":"مفاعلتن مفاعلتن فعولن","feet":["مفاعلتن","مفاعلتن","فعولن"],"family":"خليلية","tags":["وجداني","حماسي"]},
+    {"id":"kamil","name":"الكامل","pattern":"متفاعلن متفاعلن متفاعلن","feet":["متفاعلن","متفاعلن","متفاعلن"],"family":"خليلية","tags":["قوي","إنشادي"]},
+    {"id":"hazaj","name":"الهزج","pattern":"مفاعيلن مفاعيلن","feet":["مفاعيلن","مفاعيلن"],"family":"خليلية","tags":["غنائي","قصير"]},
+    {"id":"rajaz","name":"الرجز","pattern":"مستفعلن مستفعلن مستفعلن","feet":["مستفعلن","مستفعلن","مستفعلن"],"family":"خليلية","tags":["شعبي","حماسي"]},
+    {"id":"ramal","name":"الرمل","pattern":"فاعلاتن فاعلاتن فاعلاتن","feet":["فاعلاتن","فاعلاتن","فاعلاتن"],"family":"خليلية","tags":["رومانسي","ناعم"]},
+    {"id":"sarie","name":"السريع","pattern":"مستفعلن مستفعلن فاعلن","feet":["مستفعلن","مستفعلن","فاعلن"],"family":"خليلية","tags":["إيقاعي","خفيف"]},
+    {"id":"munsarih","name":"المنسرح","pattern":"مستفعلن مفعولات مستفعلن","feet":["مستفعلن","مفعولات","مستفعلن"],"family":"خليلية","tags":["متنوع"]},
+    {"id":"khafif","name":"الخفيف","pattern":"فاعلاتن مستفعلن فاعلاتن","feet":["فاعلاتن","مستفعلن","فاعلاتن"],"family":"خليلية","tags":["شفاف","تأملي"]},
+    {"id":"mudaria","name":"المضارع","pattern":"مفاعيلن فاعلاتن","feet":["مفاعيلن","فاعلاتن"],"family":"خليلية","tags":["وجداني"]},
+    {"id":"muqtadab","name":"المقتضب","pattern":"مفعولات مستفعلن","feet":["مفعولات","مستفعلن"],"family":"خليلية","tags":["مكثف"]},
+    {"id":"mujtath","name":"المجتث","pattern":"مستفعلن فاعلاتن","feet":["مستفعلن","فاعلاتن"],"family":"خليلية","tags":["غنائي"]},
+    {"id":"mutaqarib","name":"المتقارب","pattern":"فعولن فعولن فعولن فعولن","feet":["فعولن","فعولن","فعولن","فعولن"],"family":"خليلية","tags":["ملحمي","زامل"]},
+    {"id":"mutadarik","name":"المتدارك","pattern":"فاعلن فاعلن فاعلن فاعلن","feet":["فاعلن","فاعلن","فاعلن","فاعلن"],"family":"خليلية","tags":["حديث","سريع"]},
+    {"id":"madeed","name":"المديد","pattern":"فاعلاتن فاعلن فاعلاتن","feet":["فاعلاتن","فاعلن","فاعلاتن"],"family":"خليلية","tags":["مرن"]}
+  ],
+  "maqamat": [
+    {"id":"bayati","name":"بيات","mood":"حنين ودفء","rhythm":"6/8","use":"اليمنية والصنعانية والموال"},
+    {"id":"rast","name":"راست","mood":"ثبات ووضوح","rhythm":"4/4","use":"الوطنية والقصصية"},
+    {"id":"hijaz","name":"حجاز","mood":"شجن واغتراب","rhythm":"6/8","use":"الفراق والتأمل"},
+    {"id":"sanaani","name":"صنعاني","mood":"تراث شعبي","rhythm":"إيقاع صنعاني","use":"الأغنية اليمنية والزامل"},
+    {"id":"saba","name":"صبا","mood":"حزن عميق","rhythm":"بطيء أو حر","use":"الرثاء والشكوى"},
+    {"id":"nahawand","name":"نهاوند","mood":"رومانسية ودراما","rhythm":"4/4 أو 6/8","use":"الأغنية الحديثة"}
+  ],
+  "dialects": [
+    {"id":"sanaani","name":"يمنية — صنعانية","features":["دفء المفردة","تركيب قصير","صور القهوة والدار والطريق"],"avoid":["تسطيح النبرة","خلط الخليجية"]},
+    {"id":"yemeni","name":"يمنية عامة","features":["إيقاع شعبي","زامل وشيلة","لغة قريبة من المحكية"]},
+    {"id":"gulf","name":"خليجية","features":["مدود غنائية","مفردات البحر والدار","قافية سهلة الترديد"]},
+    {"id":"nabati","name":"نبطية","features":["صورة صحراوية","إيقاع الشيلة","قوة اللازمة"]},
+    {"id":"msa","name":"فصحى معاصرة","features":["وضوح نحوي","قابلية للفهم العربي","مرونة في التلحين"]}
+  ],
+  "rhyme": {
+    "letters":["الباء","التاء","الجيم","الحاء","الدال","الراء","السين","الشين","الصاد","الضاد","الطاء","العين","الغين","الفاء","القاف","الكاف","اللام","الميم","النون","الهاء","الواو","الياء"],
+    "rules":["تثبيت الروي قبل التوليد","فحص الوصل والوقف","تمييز الردف والتأسيس","عدم تغيير الروي في اللازمة إلا بقصد فني","قياس القافية بعد التطبيع الإملائي"]
+  },
+  "song_structures":["مقدمة → كوبليه → لازمة → كوبليه → جسر → خاتمة","مطلع → مذهب → كوبليه → مذهب","موال → لازمة → كوبليه → لازمة","زامل: صدر → عجز → تكرار جماعي"],
+  "tools":[
+    {"id":"intent_parser","name":"فهم الطلب","status":"enabled","input":"فكرة المستخدم","output":"IntentCard"},
+    {"id":"meter_card","name":"MeterCard","status":"enabled","input":"البحر والتفعيلات","output":"قيود عروضية"},
+    {"id":"rag_retriever","name":"مسترجع قاعدة المعرفة","status":"enabled","input":"الأسلوب والموضوع","output":"أمثلة وقيود ومفردات"},
+    {"id":"draft_generator","name":"مولد المسودة متعدد النماذج","status":"enabled","input":"IntentCard + RAG","output":"كلمات أغنية"},
+    {"id":"prosody_checker","name":"محرك العروض","status":"enabled","input":"كل سطر","output":"درجة وزن وتفعيلات"},
+    {"id":"rhyme_checker","name":"فاحص القافية","status":"enabled","input":"نهايات الأسطر","output":"ثبات الروي والقافية"},
+    {"id":"singability_checker","name":"فاحص قابلية الغناء","status":"enabled","input":"النص والمقام","output":"النبر والتنفس والمدود"},
+    {"id":"repair_loop","name":"حلقة الإصلاح","status":"enabled","input":"الأسطر المخالفة","output":"إعادة صياغة محافظة على المعنى"},
+    {"id":"model_router","name":"موجّه النماذج","status":"enabled","input":"المهمة والسرعة والجودة","output":"نموذج أساسي وبدائل"},
+    {"id":"library_search","name":"بحث المكتبة","status":"enabled","input":"كلمة أو بحر أو شاعر","output":"نتائج محلية ومصادر"}
+  ],
+  "datasets": [
+    {"id":"zenodo-arabic-poetry-analysis","name":"Arabic Poetry Analysis Datasets","license":"CC BY 4.0","doi":"10.5281/zenodo.12755351","local_path":"data/zenodo/extracted","contents":"corpus, meter detection, patterns, clustering","status":"downloaded"},
+    {"id":"diwan-index","name":"Diwan classified Arabic poetry dataset","license":"MIT for repository; verify source-text rights before redistribution","url":"https://github.com/NoorBayan/Diwan","contents":"nearly 400k poems / over 14m verses claimed by project","status":"catalogued-not-embedded"},
+    {"id":"tarab","name":"Tarab multi-dialect lyrics and poetry corpus","license":"See dataset card before redistribution","url":"https://huggingface.co/datasets/drelhaj/Tarab","contents":"2.56m verses and 13.5m tokens claimed by paper","status":"catalogued-not-embedded"}
+  ],
+  "policy": "تُخزّن داخل المشروع البيانات المرخصة أو بيانات المعرفة التي أنشأها شاعر فقط. لا تُنسخ دواوين معاصرة كاملة ولا نصوص أغنيات محمية؛ تُحفظ مراجع المصادر وبيانات الفهرسة بدل ذلك."
+}

@@ -56,3 +56,14 @@ python3 -m http.server 4173
 
 [1]: https://huggingface.co/docs/inference-providers/en/pricing "Hugging Face Inference Providers Pricing"
 [2]: https://openrouter.ai/openrouter/free "OpenRouter Free Models Router"
+
+
+## قاعدة المعرفة والأدوات المفعلة
+
+أضيفت قاعدة معرفة محلية في `data/knowledge_base.json` تشمل البحور العربية الستة عشر، التفعيلات، القافية والروي، المقامات والإيقاعات، اللهجات، بنى الأغاني، ومصفوفة الأدوات العشر: فهم الطلب، MeterCard، RAG، توليد المسودة، محرك العروض، فحص القافية، قابلية الغناء، حلقة الإصلاح، موجّه النماذج، وبحث المكتبة.
+
+تم تنزيل مجموعة `Arabic Poetry Analysis Datasets` من Zenodo داخل `data/zenodo/` وفق الترخيص المعلن CC BY 4.0. تحتوي على بيانات كشف البحر، أنماط القصائد، corpus شعري، وصيغ التحليل. تُعرض داخل الواجهة كقاعدة محلية قابلة للبحث، بينما فهارس Diwan وTarab مضافة كمصادر خارجية مع عدم نسخ نصوص غير متحقق من شروط إعادة توزيعها.
+
+تقوم الواجهة بتحميل قاعدة المعرفة عبر `fetch('data/knowledge_base.json')`، وتعرض عدد البحور والمقامات والأدوات، وتتيح البحث عن بحر أو مقام أو لهجة أو أداة. يعمل مولّد الأغنية محليًا كـ fallback مضمون، وتبقى موصلات النماذج الخارجية خلف Backend آمن عند الانتقال إلى الإنتاج.
+
+راجع `data/SOURCES.md` و`KNOWLEDGE_TEST_NOTES.md` للمصادر والتراخيص ونتائج الاختبار.

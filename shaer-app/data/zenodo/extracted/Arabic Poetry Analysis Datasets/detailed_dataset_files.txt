@@ -1,0 +1,392 @@
+Arabic Poetry Analysis Datasets/
+├── meter_detection
+│   ├── current
+│   │   ├── meter_detection_dataset.csv
+│   │   └── meter_detection_dataset.xlsx
+│   ├── readme_meter_detection_corpus.txt
+│   └── version 01
+│       ├── meter_detection_dataset_v01.csv
+│       └── meter_detection_dataset_v01.xlsx
+├── poetry_clustering
+│   ├── project1
+│   │   ├── clustering
+│   │   │   ├── results_2_attribs_k2-9.csv
+│   │   │   ├── results_3_attribs_k2-9.csv
+│   │   │   ├── results_4_attribs_k2-9.csv
+│   │   │   ├── results_5_attribs_k2-9.csv
+│   │   │   └── results_6_attribs_k2-9.csv
+│   │   ├── data
+│   │   │   ├── clustering_data.csv
+│   │   │   └── clustering_data.xlsx
+│   │   ├── figures
+│   │   │   ├── boxplot_data.eps
+│   │   │   ├── boxplot_data.png
+│   │   │   ├── opt_1_pot_rep.eps
+│   │   │   ├── opt_1_pot_rep.png
+│   │   │   ├── opt_2_rep_div.eps
+│   │   │   ├── opt_2_rep_div.png
+│   │   │   ├── opt_3_6.eps
+│   │   │   ├── opt_3_6.png
+│   │   │   ├── opt_4_5_rep_var.eps
+│   │   │   ├── opt_4_5_rep_var.png
+│   │   │   ├── opt_7_8_usg_rep.eps
+│   │   │   └── opt_7_8_usg_rep.png
+│   │   ├── readme_clustering.txt
+│   │   ├── readme_data.txt
+│   │   ├── readme_figures.txt
+│   │   ├── readme_results.txt
+│   │   └── results
+│   │       ├── opt_1_pot_rep.csv
+│   │       ├── opt_2_rep_div.csv
+│   │       ├── opt_3_rep_eve.csv
+│   │       ├── opt_4_rep_var.csv
+│   │       ├── opt_5_rep_var.csv
+│   │       ├── opt_6_usg_eve.csv
+│   │       ├── opt_7_usg_rep.csv
+│   │       ├── opt_8_usg_rep.csv
+│   │       └── overall.xlsx
+│   └── project2
+│       ├── clustering_results.xlsx
+│       ├── patterns_distinct_colors.xlsx
+│       ├── patterns_shared_colors.xlsx
+│       ├── readme_patterns_distinct_colors.txt
+│       ├── readme_patterns_shared_colors.txt
+│       └── readme_results.txt
+├── poetry_corpus
+│   ├── poetry_images
+│   │   ├── distinct_colors
+│   │   │   ├── Abdelmonim-Nagwa.png
+│   │   │   ├── Abdulrahma-Bochraa Fa.png
+│   │   │   ├── Abi Alatah-Inna Al Fa.png
+│   │   │   ├── Abou Alala-Ijtanib An.png
+│   │   │   ├── Abou Alala-Kollon 3la.png
+│   │   │   ├── Abou Alala-Qifee waqf.png
+│   │   │   ├── Abou Al Fa-Itha warad.png
+│   │   │   ├── Abou Al ka-Gannaho al.png
+│   │   │   ├── Abou Al ka-Yaa Labtis.png
+│   │   │   ├── Abou Al ka-Yaa Rafiik.png
+│   │   │   ├── Abou Firas-Allawmo Li.png
+│   │   │   ├── Abou Firas-Liayyikomo.png
+│   │   │   ├── Abou Firas-Yaa Hasrat.png
+│   │   │   ├── Abou Nawas-3azzou Akh.png
+│   │   │   ├── Abou Nawas-Ilaahana.png
+│   │   │   ├── Acharif Ar-Amaa Konta.png
+│   │   │   ├── Ahmed Al K-Foaadon mi.png
+│   │   │   ├── Ahmed Al K-Wajdon Lah.png
+│   │   │   ├── Ahmed Chaw-Afifo Al J.png
+│   │   │   ├── Ahmed Chaw-Akhathat N.png
+│   │   │   ├── Ahmed Chaw-Bayna Sam3.png
+│   │   │   ├── Ahmed Chaw-Fachawdato.png
+│   │   │   ├── Ahmed Chaw-Modnaka.png
+│   │   │   ├── Ahmed Chaw-Yabna Zayd.png
+│   │   │   ├── Ahmed Rami-Ila Um Kol.png
+│   │   │   ├── Ahmed Rami-Robaa3ayaa.png
+│   │   │   ├── Al Aacha-Moallaqa.png
+│   │   │   ├── Al Akhtal-Kad Gharra.png
+│   │   │   ├── Al Bohtori-Maa Lilkab.png
+│   │   │   ├── Al Boussir-Al Borda.png
+│   │   │   ├── Al Charif -Ilaa Kam A.png
+│   │   │   ├── Al Harith -Moallaqa.png
+│   │   │   ├── Al Hays Ba-Wa Bilqasr.png
+│   │   │   ├── Al Hosari -Ya Laylo A.png
+│   │   │   ├── Ali Al Jaa-Al Chariid.png
+│   │   │   ├── Al Khansae-Alaa Abki .png
+│   │   │   ├── Al Khansae-Marahat 3a.png
+│   │   │   ├── Al Manfalo-Ayyoha Al .png
+│   │   │   ├── Al Motanab-A haqon 3a.png
+│   │   │   ├── Al Motanab-Aid.png
+│   │   │   ├── Al Motanab-Lahawa Aln.png
+│   │   │   ├── Al Motanab-Maa Lilmor.png
+│   │   │   ├── Al Motanab-Wa chaamik.png
+│   │   │   ├── Al Naabigh-Moallaqa.png
+│   │   │   ├── Amr Ibn Ko-Moallaqa.png
+│   │   │   ├── Antara Ibn-Moallaqa.png
+│   │   │   ├── Antara Ibn-Yaa 3ablo .png
+│   │   │   ├── Assilkato -Taafa yabg.png
+│   │   │   ├── Aws Ibn Ha-Alam Taksi.png
+│   │   │   ├── Bachar Ibn-Taala Fi H.png
+│   │   │   ├── Bachar Ibn-Tajahaza T.png
+│   │   │   ├── Badiie Azz-Lain Ahraz.png
+│   │   │   ├── Badiie Azz-Salamon Ra.png
+│   │   │   ├── Chadli Kha-Raahato An.png
+│   │   │   ├── Chadli Kha-Zaana Tarf.png
+│   │   │   ├── Gibran Kha-Rabbata Al.png
+│   │   │   ├── Hafez Ibra-Ahlan Biaw.png
+│   │   │   ├── Hafez Ibra-Ma Lihatha.png
+│   │   │   ├── Hajib Ibn -Batat Talo.png
+│   │   │   ├── Hassan Ibn-Onthor Kha.png
+│   │   │   ├── Ibn Al Kha-Mawlaya.png
+│   │   │   ├── Ibn Al Moa-Jaara haad.png
+│   │   │   ├── Ibn Al Moa-La Ara Fil.png
+│   │   │   ├── Ibn Khafaa-Marra bina.png
+│   │   │   ├── Ibn Nabaat-Afdi Qamar.png
+│   │   │   ├── Ibn Roumi-Dardato Ib.png
+│   │   │   ├── Ibn Roumi-Ghosnon mi.png
+│   │   │   ├── Ibn Roumi-Lakad Raay.png
+│   │   │   ├── Ibn Sinae -Ayadfa3oni.png
+│   │   │   ├── Ibn Sinae -Laqad Laqa.png
+│   │   │   ├── Ibn Zaydou-Yaa Dam3i .png
+│   │   │   ├── Ibrahim Na-Qolto Lilb.png
+│   │   │   ├── Ilyass Abo-Laa Yachoq.png
+│   │   │   ├── Jamil Sidk-Inna man q.png
+│   │   │   ├── Jarir-Baana Al K.png
+│   │   │   ├── Jarir-Inni Imrii.png
+│   │   │   ├── Khalil Mat-Alaama Yok.png
+│   │   │   ├── Khalil Mat-Al Qoloubo.png
+│   │   │   ├── Khalil Mat-Hakou Lana.png
+│   │   │   ├── Lobayd Ibn-Moallaqa.png
+│   │   │   ├── Mahmoud Sa-Mas3aak.png
+│   │   │   ├── Mahmoud Sa-Waylaho Mi.png
+│   │   │   ├── Mikhail No-Sakfo bayt.png
+│   │   │   ├── Moein Bass-Al Milad.png
+│   │   │   ├── Mohammed A-Janniniini.png
+│   │   │   ├── Mostafa Sa-Kaasouki Y.png
+│   │   │   ├── Obayd Ibn -Moallaqa.png
+│   │   │   ├── Omar Ibn A-Alaa yaa b.png
+│   │   │   ├── Omar Ibn A-Taribto Wa.png
+│   │   │   ├── Omayma Bin-Abaa Layli.png
+│   │   │   ├── Omroo Al K-Liman Tala.png
+│   │   │   ├── Omroo Al K-Moallaqa.png
+│   │   │   ├── Omroo Al K-Ya Dara Ma.png
+│   │   │   ├── Qays Ibn A-Alaa Fasal.png
+│   │   │   ├── Safiy Al D-Ayna Filhi.png
+│   │   │   ├── Safiy Al D-Chakawto I.png
+│   │   │   ├── Siham Al B-Bariiqo Al.png
+│   │   │   ├── Souleyman -Yaa Taarik.png
+│   │   │   ├── Taabbata C-Inna Bi Ch.png
+│   │   │   ├── Tarafa Ibn-Achajaaka .png
+│   │   │   ├── Tarafa Ibn-Moallaqa.png
+│   │   │   ├── Zohayr Ibn-Amin Aali .png
+│   │   │   ├── Zohayr Ibn-Bana Alkha.png
+│   │   │   └── Zohayr Ibn-Moallaqa.png
+│   │   ├── poet_poem_image.csv
+│   │   ├── poet_poem_image.xlsx
+│   │   ├── readme_poetry_images.txt
+│   │   └── shared_colors
+│   │       ├── Abdelmonim-Nagwa.png
+│   │       ├── Abdulrahma-Bochraa Fa.png
+│   │       ├── Abi Alatah-Inna Al Fa.png
+│   │       ├── Abou Alala-Ijtanib An.png
+│   │       ├── Abou Alala-Kollon 3la.png
+│   │       ├── Abou Alala-Qifee waqf.png
+│   │       ├── Abou Al Fa-Itha warad.png
+│   │       ├── Abou Al ka-Gannaho al.png
+│   │       ├── Abou Al ka-Yaa Labtis.png
+│   │       ├── Abou Al ka-Yaa Rafiik.png
+│   │       ├── Abou Firas-Allawmo Li.png
+│   │       ├── Abou Firas-Liayyikomo.png
+│   │       ├── Abou Firas-Yaa Hasrat.png
+│   │       ├── Abou Nawas-3azzou Akh.png
+│   │       ├── Abou Nawas-Ilaahana.png
+│   │       ├── Acharif Ar-Amaa Konta.png
+│   │       ├── Ahmed Al K-Foaadon mi.png
+│   │       ├── Ahmed Al K-Wajdon Lah.png
+│   │       ├── Ahmed Chaw-Afifo Al J.png
+│   │       ├── Ahmed Chaw-Akhathat N.png
+│   │       ├── Ahmed Chaw-Bayna Sam3.png
+│   │       ├── Ahmed Chaw-Fachawdato.png
+│   │       ├── Ahmed Chaw-Modnaka.png
+│   │       ├── Ahmed Chaw-Yabna Zayd.png
+│   │       ├── Ahmed Rami-Ila Um Kol.png
+│   │       ├── Ahmed Rami-Robaa3ayaa.png
+│   │       ├── Al Aacha-Moallaqa.png
+│   │       ├── Al Akhtal-Kad Gharra.png
+│   │       ├── Al Bohtori-Maa Lilkab.png
+│   │       ├── Al Boussir-Al Borda.png
+│   │       ├── Al Charif -Ilaa Kam A.png
+│   │       ├── Al Harith -Moallaqa.png
+│   │       ├── Al Hays Ba-Wa Bilqasr.png
+│   │       ├── Al Hosari -Ya Laylo A.png
+│   │       ├── Ali Al Jaa-Al Chariid.png
+│   │       ├── Al Khansae-Alaa Abki .png
+│   │       ├── Al Khansae-Marahat 3a.png
+│   │       ├── Al Manfalo-Ayyoha Al .png
+│   │       ├── Al Motanab-A haqon 3a.png
+│   │       ├── Al Motanab-Aid.png
+│   │       ├── Al Motanab-Lahawa Aln.png
+│   │       ├── Al Motanab-Maa Lilmor.png
+│   │       ├── Al Motanab-Wa chaamik.png
+│   │       ├── Al Naabigh-Moallaqa.png
+│   │       ├── Amr Ibn Ko-Moallaqa.png
+│   │       ├── Antara Ibn-Moallaqa.png
+│   │       ├── Antara Ibn-Yaa 3ablo .png
+│   │       ├── Assilkato -Taafa yabg.png
+│   │       ├── Aws Ibn Ha-Alam Taksi.png
+│   │       ├── Bachar Ibn-Taala Fi H.png
+│   │       ├── Bachar Ibn-Tajahaza T.png
+│   │       ├── Badiie Azz-Lain Ahraz.png
+│   │       ├── Badiie Azz-Salamon Ra.png
+│   │       ├── Chadli Kha-Raahato An.png
+│   │       ├── Chadli Kha-Zaana Tarf.png
+│   │       ├── Gibran Kha-Rabbata Al.png
+│   │       ├── Hafez Ibra-Ahlan Biaw.png
+│   │       ├── Hafez Ibra-Ma Lihatha.png
+│   │       ├── Hajib Ibn -Batat Talo.png
+│   │       ├── Hassan Ibn-Onthor Kha.png
+│   │       ├── Ibn Al Kha-Mawlaya.png
+│   │       ├── Ibn Al Moa-Jaara haad.png
+│   │       ├── Ibn Al Moa-La Ara Fil.png
+│   │       ├── Ibn Khafaa-Marra bina.png
+│   │       ├── Ibn Nabaat-Afdi Qamar.png
+│   │       ├── Ibn Roumi-Dardato Ib.png
+│   │       ├── Ibn Roumi-Ghosnon mi.png
+│   │       ├── Ibn Roumi-Lakad Raay.png
+│   │       ├── Ibn Sinae -Ayadfa3oni.png
+│   │       ├── Ibn Sinae -Laqad Laqa.png
+│   │       ├── Ibn Zaydou-Yaa Dam3i .png
+│   │       ├── Ibrahim Na-Qolto Lilb.png
+│   │       ├── Ilyass Abo-Laa Yachoq.png
+│   │       ├── Jamil Sidk-Inna man q.png
+│   │       ├── Jarir-Baana Al K.png
+│   │       ├── Jarir-Inni Imrii.png
+│   │       ├── Khalil Mat-Alaama Yok.png
+│   │       ├── Khalil Mat-Al Qoloubo.png
+│   │       ├── Khalil Mat-Hakou Lana.png
+│   │       ├── Lobayd Ibn-Moallaqa.png
+│   │       ├── Mahmoud Sa-Mas3aak.png
+│   │       ├── Mahmoud Sa-Waylaho Mi.png
+│   │       ├── Mikhail No-Sakfo bayt.png
+│   │       ├── Moein Bass-Al Milad.png
+│   │       ├── Mohammed A-Janniniini.png
+│   │       ├── Mostafa Sa-Kaasouki Y.png
+│   │       ├── Obayd Ibn -Moallaqa.png
+│   │       ├── Omar Ibn A-Alaa yaa b.png
+│   │       ├── Omar Ibn A-Taribto Wa.png
+│   │       ├── Omayma Bin-Abaa Layli.png
+│   │       ├── Omroo Al K-Liman Tala.png
+│   │       ├── Omroo Al K-Moallaqa.png
+│   │       ├── Omroo Al K-Ya Dara Ma.png
+│   │       ├── Qays Ibn A-Alaa Fasal.png
+│   │       ├── Safiy Al D-Ayna Filhi.png
+│   │       ├── Safiy Al D-Chakawto I.png
+│   │       ├── Siham Al B-Bariiqo Al.png
+│   │       ├── Souleyman -Yaa Taarik.png
+│   │       ├── Taabbata C-Inna Bi Ch.png
+│   │       ├── Tarafa Ibn-Achajaaka .png
+│   │       ├── Tarafa Ibn-Moallaqa.png
+│   │       ├── Zohayr Ibn-Amin Aali .png
+│   │       ├── Zohayr Ibn-Bana Alkha.png
+│   │       └── Zohayr Ibn-Moallaqa.png
+│   ├── poetry_patterns
+│   │   ├── data
+│   │   │   ├── Abdelmonim-Nagwa.csv
+│   │   │   ├── Abdulrahma-Bochraa Fa.csv
+│   │   │   ├── Abi Alatah-Inna Al Fa.csv
+│   │   │   ├── Abou Alala-Ijtanib An.csv
+│   │   │   ├── Abou Alala-Kollon 3la.csv
+│   │   │   ├── Abou Alala-Qifee waqf.csv
+│   │   │   ├── Abou Al Fa-Itha warad.csv
+│   │   │   ├── Abou Al ka-Gannaho al.csv
+│   │   │   ├── Abou Al ka-Yaa Labtis.csv
+│   │   │   ├── Abou Al ka-Yaa Rafiik.csv
+│   │   │   ├── Abou Firas-Allawmo Li.csv
+│   │   │   ├── Abou Firas-Liayyikomo.csv
+│   │   │   ├── Abou Firas-Yaa Hasrat.csv
+│   │   │   ├── Abou Nawas-3azzou Akh.csv
+│   │   │   ├── Abou Nawas-Ilaahana.csv
+│   │   │   ├── Acharif Ar-Amaa Konta.csv
+│   │   │   ├── Ahmed Al K-Foaadon mi.csv
+│   │   │   ├── Ahmed Al K-Wajdon Lah.csv
+│   │   │   ├── Ahmed Chaw-Afifo Al J.csv
+│   │   │   ├── Ahmed Chaw-Akhathat N.csv
+│   │   │   ├── Ahmed Chaw-Bayna Sam3.csv
+│   │   │   ├── Ahmed Chaw-Fachawdato.csv
+│   │   │   ├── Ahmed Chaw-Modnaka.csv
+│   │   │   ├── Ahmed Chaw-Yabna Zayd.csv
+│   │   │   ├── Ahmed Rami-Ila Um Kol.csv
+│   │   │   ├── Ahmed Rami-Robaa3ayaa.csv
+│   │   │   ├── Al Aacha-Moallaqa.csv
+│   │   │   ├── Al Akhtal-Kad Gharra.csv
+│   │   │   ├── Al Bohtori-Maa Lilkab.csv
+│   │   │   ├── Al Boussir-Al Borda.csv
+│   │   │   ├── Al Charif -Ilaa Kam A.csv
+│   │   │   ├── Al Harith -Moallaqa.csv
+│   │   │   ├── Al Hays Ba-Wa Bilqasr.csv
+│   │   │   ├── Al Hosari -Ya Laylo A.csv
+│   │   │   ├── Ali Al Jaa-Al Chariid.csv
+│   │   │   ├── Al Khansae-Alaa Abki .csv
+│   │   │   ├── Al Khansae-Marahat 3a.csv
+│   │   │   ├── Al Manfalo-Ayyoha Al .csv
+│   │   │   ├── Al Motanab-A haqon 3a.csv
+│   │   │   ├── Al Motanab-Aid.csv
+│   │   │   ├── Al Motanab-Lahawa Aln.csv
+│   │   │   ├── Al Motanab-Maa Lilmor.csv
+│   │   │   ├── Al Motanab-Wa chaamik.csv
+│   │   │   ├── Al Naabigh-Moallaqa.csv
+│   │   │   ├── Amr Ibn Ko-Moallaqa.csv
+│   │   │   ├── Antara Ibn-Moallaqa.csv
+│   │   │   ├── Antara Ibn-Yaa 3ablo .csv
+│   │   │   ├── Assilkato -Taafa yabg.csv
+│   │   │   ├── Aws Ibn Ha-Alam Taksi.csv
+│   │   │   ├── Bachar Ibn-Taala Fi H.csv
+│   │   │   ├── Bachar Ibn-Tajahaza T.csv
+│   │   │   ├── Badiie Azz-Lain Ahraz.csv
+│   │   │   ├── Badiie Azz-Salamon Ra.csv
+│   │   │   ├── Chadli Kha-Raahato An.csv
+│   │   │   ├── Chadli Kha-Zaana Tarf.csv
+│   │   │   ├── Gibran Kha-Rabbata Al.csv
+│   │   │   ├── Hafez Ibra-Ahlan Biaw.csv
+│   │   │   ├── Hafez Ibra-Ma Lihatha.csv
+│   │   │   ├── Hajib Ibn -Batat Talo.csv
+│   │   │   ├── Hassan Ibn-Onthor Kha.csv
+│   │   │   ├── Ibn Al Kha-Mawlaya.csv
+│   │   │   ├── Ibn Al Moa-Jaara haad.csv
+│   │   │   ├── Ibn Al Moa-La Ara Fil.csv
+│   │   │   ├── Ibn Khafaa-Marra bina.csv
+│   │   │   ├── Ibn Nabaat-Afdi Qamar.csv
+│   │   │   ├── Ibn Roumi-Dardato Ib.csv
+│   │   │   ├── Ibn Roumi-Ghosnon mi.csv
+│   │   │   ├── Ibn Roumi-Lakad Raay.csv
+│   │   │   ├── Ibn Sinae -Ayadfa3oni.csv
+│   │   │   ├── Ibn Sinae -Laqad Laqa.csv
+│   │   │   ├── Ibn Zaydou-Yaa Dam3i .csv
+│   │   │   ├── Ibrahim Na-Qolto Lilb.csv
+│   │   │   ├── Ilyass Abo-Laa Yachoq.csv
+│   │   │   ├── Jamil Sidk-Inna man q.csv
+│   │   │   ├── Jarir-Baana Al K.csv
+│   │   │   ├── Jarir-Inni Imrii.csv
+│   │   │   ├── Khalil Mat-Alaama Yok.csv
+│   │   │   ├── Khalil Mat-Al Qoloubo.csv
+│   │   │   ├── Khalil Mat-Hakou Lana.csv
+│   │   │   ├── Lobayd Ibn-Moallaqa.csv
+│   │   │   ├── Mahmoud Sa-Mas3aak.csv
+│   │   │   ├── Mahmoud Sa-Waylaho Mi.csv
+│   │   │   ├── Mikhail No-Sakfo bayt.csv
+│   │   │   ├── Moein Bass-Al Milad.csv
+│   │   │   ├── Mohammed A-Janniniini.csv
+│   │   │   ├── Mostafa Sa-Kaasouki Y.csv
+│   │   │   ├── Obayd Ibn -Moallaqa.csv
+│   │   │   ├── Omar Ibn A-Alaa yaa b.csv
+│   │   │   ├── Omar Ibn A-Taribto Wa.csv
+│   │   │   ├── Omayma Bin-Abaa Layli.csv
+│   │   │   ├── Omroo Al K-Liman Tala.csv
+│   │   │   ├── Omroo Al K-Moallaqa.csv
+│   │   │   ├── Omroo Al K-Ya Dara Ma.csv
+│   │   │   ├── Qays Ibn A-Alaa Fasal.csv
+│   │   │   ├── Safiy Al D-Ayna Filhi.csv
+│   │   │   ├── Safiy Al D-Chakawto I.csv
+│   │   │   ├── Siham Al B-Bariiqo Al.csv
+│   │   │   ├── Souleyman -Yaa Taarik.csv
+│   │   │   ├── Taabbata C-Inna Bi Ch.csv
+│   │   │   ├── Tarafa Ibn-Achajaaka .csv
+│   │   │   ├── Tarafa Ibn-Moallaqa.csv
+│   │   │   ├── Zohayr Ibn-Amin Aali .csv
+│   │   │   ├── Zohayr Ibn-Bana Alkha.csv
+│   │   │   └── Zohayr Ibn-Moallaqa.csv
+│   │   ├── poet_poem_filename.csv
+│   │   ├── poet_poem_filename.xlsx
+│   │   └── readme_poetry_patterns.txt
+│   └── poetry_text
+│       ├── current
+│       │   ├── poetry_corpus_current.csv
+│       │   └── poetry_corpus_current.xlsx
+│       ├── readme_poetry_text.txt
+│       ├── version 01
+│       │   ├── poetry_corpus_v01.csv
+│       │   └── poetry_corpus_v01.xlsx
+│       └── version 02
+│           ├── poetry_corpus_v02.csv
+│           └── poetry_corpus_v02.xlsx
+└── readme.txt
+
+20 directories, 369 files
