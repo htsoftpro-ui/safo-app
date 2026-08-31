@@ -5,7 +5,8 @@ import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
   plugins: [vue(), tailwindcss()],
-  base: '/safo-app/supplier/',
+  // GitHub Pages serves from a repository subpath; shared hosting serves from the domain root.
+  base: process.env.GITHUB_ACTIONS ? '/safo-app/supplier/' : './',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

@@ -47,6 +47,12 @@ jobs:
           cp -r safo-admin-dashboard/dist/* _site/admin/
           cp -r safo-supplier-dashboard/dist/* _site/supplier/
           cp safo-customer-web/index.html _site/index.html
+          cp safo-customer-web/index.html _site/market.html
+
+          # Shared-hosting friendly entry points for clean supplier/admin URLs.
+          mkdir -p _site/supplier/orders _site/admin/orders
+          cp safo-supplier-dashboard/dist/index.html _site/supplier/orders/index.html
+          cp safo-admin-dashboard/dist/index.html _site/admin/orders/index.html
 
           # SPA fallback: 404.html redirects to correct app
           cat > _site/404.html << 'EOF'
