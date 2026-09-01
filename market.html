@@ -405,11 +405,16 @@ let products=[
 ];
 
 // ============ API LOADERS ============
+async function fetchWithTimeout(url,ms=3500){
+const controller=new AbortController();
+const timer=setTimeout(()=>controller.abort(),ms);
+try{return await fetch(url,{signal:controller.signal})}finally{clearTimeout(timer)}
+}
 async function loadFromApi(){
 try{
 const[catRes,prodRes]=await Promise.all([
-fetch(API_BASE+'/categories'),
-fetch(API_BASE+'/products?per_page=50')
+fetchWithTimeout(API_BASE+'/categories'),
+fetchWithTimeout(API_BASE+'/products?per_page=50')
 ]);
 if(!catRes.ok||!prodRes.ok)return false;
 const catData=await catRes.json();
@@ -699,20 +704,25 @@ function goSearch(){const q=document.getElementById('home-search')?.value;if(q){
 function shareProduct(){showToast('تم نسخ رابط المنتج')}
 
 // ============ INIT ============
-async function init(){
-await loadFromApi();
+function renderAll(){
 renderHomeCategories();
 renderFeatured();
 renderBestSellers();
 renderNewArrivals();
 renderOffers();
 renderHomeSuppliers();
-initSlider();
 const recGrid=document.getElementById('recommendations-grid');
 if(recGrid)recGrid.innerHTML=getSmartRecommendations(6).map(renderProductCard).join('');
 const catSelect=document.getElementById('cat-filter');
-if(catSelect)categories.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.name;catSelect.appendChild(o)});
+if(catSelect){catSelect.innerHTML='<option value="">كل التصنيفات</option>';categories.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.name;catSelect.appendChild(o)})}
 updateCartBadge();
+}
+async function init(){
+// Render the bundled catalogue immediately; the remote API is an enhancement.
+renderAll();
+await loadFromApi();
+renderAll();
+initSlider();
 }
 init();
 </script>
