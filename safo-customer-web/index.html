@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="safo-release" content="2026-09-01-pages-sync-fix">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>صفو</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
@@ -140,8 +144,8 @@ input:focus,select:focus,textarea:focus{border-color:#2563eb;background:white}
 <div class="header-icons">
 <a onclick="showPage('notifications')"><i class="fa-regular fa-bell"></i><span class="badge" id="notif-badge" style="display:none">0</span></a>
 <a onclick="showPage('cart')"><i class="fa-solid fa-cart-shopping"></i><span class="badge" id="cart-badge" style="display:none">0</span></a>
-<a href="/safo-app/supplier/" title="لوحة المورد" style="color:#2563eb"><i class="fa-solid fa-store"></i></a>
-<a href="/safo-app/admin/" title="لوحة الإدارة" style="color:#dc2626"><i class="fa-solid fa-gear"></i></a>
+<a id="supplier-link" href="/supplier/" title="لوحة المورد" style="color:#2563eb"><i class="fa-solid fa-store"></i></a>
+<a id="admin-link" href="/admin/" title="لوحة الإدارة" style="color:#dc2626"><i class="fa-solid fa-gear"></i></a>
 </div>
 </div>
 </header>
@@ -353,6 +357,9 @@ input:focus,select:focus,textarea:focus{border-color:#2563eb;background:white}
 <script>
 // ============ API CONFIG ============
 const API_BASE='https://safo-app.up.railway.app/api/v1';
+const SITE_BASE=location.hostname.endsWith('github.io')?'/safo-app':'',supplierLink=document.getElementById('supplier-link'),adminLink=document.getElementById('admin-link');
+if(supplierLink)supplierLink.href=SITE_BASE+'/supplier/';
+if(adminLink)adminLink.href=SITE_BASE+'/admin/';
 const CAT_ICONS={1:'fa-wheat-awn',2:'fa-mug-hot',3:'fa-spray-can',4:'fa-hand-sparkles',5:'fa-glass-water',6:'fa-cake-candles',7:'fa-fire',8:'fa-box-open',9:'fa-candy-bar',10:'fa-laptop',11:'fa-drumstick-bite',12:'fa-leaf'};
 const CAT_GRADIENTS={1:'linear-gradient(135deg,#f59e0b,#d97706)',2:'linear-gradient(135deg,#10b981,#059669)',3:'linear-gradient(135deg,#3b82f6,#2563eb)',4:'linear-gradient(135deg,#ec4899,#db2777)',5:'linear-gradient(135deg,#f97316,#ea580c)',6:'linear-gradient(135deg,#a855f7,#7c3aed)',7:'linear-gradient(135deg,#ef4444,#dc2626)',8:'linear-gradient(135deg,#6366f1,#4f46e5)',9:'linear-gradient(135deg,#14b8a6,#0d9488)',10:'linear-gradient(135deg,#64748b,#475569)',11:'linear-gradient(135deg,#dc2626,#991b1b)',12:'linear-gradient(135deg,#22c55e,#16a34a)'};
 const SUPP_COLORS=['#2563eb','#059669','#d97706','#7c3aed','#dc2626','#4f46e5','#0891b2','#db2777'];

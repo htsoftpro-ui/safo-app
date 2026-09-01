@@ -1,8 +1,7 @@
-name: Deploy Shaer to GitHub Pages
+name: Deploy Shaer to GitHub Pages (manual legacy)
+
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

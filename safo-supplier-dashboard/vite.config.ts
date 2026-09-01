@@ -5,7 +5,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
   plugins: [vue(), tailwindcss()],
-  base: '/safo-app/supplier/',
+  base: process.env.DEPLOY_TARGET === 'infinityfree' ? '/supplier/' : '/safo-app/supplier/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
