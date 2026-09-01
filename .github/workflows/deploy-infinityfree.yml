@@ -24,6 +24,9 @@ concurrency:
 
 jobs:
   deploy:
+    # The direct deployment is already applied. This job activates automatically
+    # after the repository owner adds the four INFINITYFREE_* Actions secrets.
+    if: ${{ secrets.INFINITYFREE_FTP_HOST != '' && secrets.INFINITYFREE_FTP_USER != '' && secrets.INFINITYFREE_FTP_PASSWORD != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

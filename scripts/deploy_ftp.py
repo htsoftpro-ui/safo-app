@@ -22,12 +22,13 @@ def remote_dir(ftp: FTP_TLS, path: str) -> None:
             ftp.cwd(part)
 
 
-def upload_tree(local_root: Path, ftp: FTP_TLS) -> int:
+def upload_tree(local_root: Path, ftp: FTP_TLS, base: str) -> int:
     uploaded = 0
     for local_path in sorted(local_root.rglob("*")):
         relative = local_path.relative_to(local_root).as_posix()
         parent = posixpath.dirname(relative)
         ftp.cwd("/")
+        remote_dir(ftp, base)
         remote_dir(ftp, parent)
         if local_path.is_dir():
             try:
@@ -63,7 +64,7 @@ def main() -> int:
     ftp.prot_p()
     ftp.cwd("/")
     remote_dir(ftp, remote)
-    count = upload_tree(root, ftp)
+    count = upload_tree(root, ftp, remote)
     ftp.quit()
     print(f"uploaded {count} files to {host}/{remote}")
     return 0
