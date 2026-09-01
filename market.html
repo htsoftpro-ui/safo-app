@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="safo-release" content="2026-09-01-market-only-6102333">
+<meta name="safo-release" content="2026-09-02-pro-market-v1">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -12,15 +12,17 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 *{font-family:'Noto Sans Arabic',sans-serif;margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#f5f5f5;min-height:100vh;padding-bottom:65px;overflow-x:hidden}
+:root{--brand:#2563eb;--brand-dark:#1e40af;--ink:#111827;--muted:#6b7280;--surface:#ffffff;--page:#f5f7fb;--line:#e5e7eb}
+body{background:var(--page);min-height:100vh;padding-bottom:65px;overflow-x:hidden;color:var(--ink)}
+body:before{content:'';display:block;height:3px;background:linear-gradient(90deg,#2563eb,#7c3aed,#06b6d4)}
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;border:none;outline:none}
 input,select,textarea{outline:none;font-family:inherit}
 
 /* ===== HEADER ===== */
-.app-header{background:white;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.app-header{background:rgba(255,255,255,.96);position:sticky;top:3px;z-index:100;box-shadow:0 4px 18px rgba(15,23,42,.06);backdrop-filter:blur(12px)}
 .header-top{display:flex;align-items:center;padding:10px 16px;gap:12px}
-.header-logo{font-size:22px;font-weight:700;color:#2563eb;white-space:nowrap}
+.header-logo{font-size:23px;font-weight:800;color:#2563eb;white-space:nowrap;display:flex;align-items:center;gap:6px;letter-spacing:-.5px}.header-logo small{font-size:9px;font-weight:600;color:#64748b;letter-spacing:0;margin-top:12px}
 .header-search{flex:1;position:relative}
 .header-search input{width:100%;padding:9px 36px 9px 12px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;background:#f9fafb}
 .header-search input:focus{border-color:#2563eb;background:white}
@@ -30,14 +32,14 @@ input,select,textarea{outline:none;font-family:inherit}
 .header-icons .badge{position:absolute;top:-6px;right:-8px;background:#ef4444;color:white;font-size:9px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600}
 
 /* ===== SLIDER ===== */
-.slider-section{position:relative;overflow:hidden;margin:12px 16px;border-radius:14px}
+.trust-strip{display:flex;gap:8px;overflow-x:auto;padding:10px 16px 2px;scrollbar-width:none;background:#fff;border-bottom:1px solid #eef2f7}.trust-strip::-webkit-scrollbar{display:none}.trust-item{display:flex;align-items:center;gap:7px;white-space:nowrap;background:#f8fafc;border:1px solid #eef2f7;border-radius:999px;padding:7px 11px;font-size:11px;color:#475569}.trust-item i{color:#2563eb;font-size:13px}.slider-section{position:relative;overflow:hidden;margin:12px 16px;border-radius:18px;box-shadow:0 12px 30px rgba(37,99,235,.13)}
 .slider-track{display:flex;transition:transform .5s ease;will-change:transform}
 .slide{min-width:100%;position:relative;aspect-ratio:2.2/1;overflow:hidden}
 .slide-bg{width:100%;height:100%;display:flex;align-items:center;padding:24px 20px}
 .slide-content{position:relative;z-index:2;color:white;max-width:60%}
 .slide-content h2{font-size:20px;font-weight:700;margin-bottom:6px;line-height:1.3}
 .slide-content p{font-size:13px;opacity:.9;margin-bottom:12px;line-height:1.4}
-.slide-btn{background:white;color:#2563eb;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:600;display:inline-block}
+.slide-btn{background:white;color:#2563eb;padding:9px 20px;border-radius:999px;font-size:13px;font-weight:700;display:inline-block;box-shadow:0 5px 12px rgba(15,23,42,.12);transition:transform .2s,box-shadow .2s}.slide-btn:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(15,23,42,.18)}
 .slide-dots{display:flex;justify-content:center;gap:6px;margin-top:10px}
 .slide-dots .dot{width:8px;height:8px;border-radius:50%;background:#d1d5db;transition:all .3s}
 .slide-dots .dot.active{background:#2563eb;width:20px;border-radius:4px}
@@ -76,7 +78,7 @@ input,select,textarea{outline:none;font-family:inherit}
 .products-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px}
 @media(min-width:480px){.products-grid{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:768px){.products-grid{grid-template-columns:repeat(4,1fr)}}
-.product-card{background:white;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);transition:transform .2s}
+.product-card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 3px 12px rgba(15,23,42,.06);transition:transform .2s,box-shadow .2s;border:1px solid rgba(226,232,240,.75)}.product-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(15,23,42,.1)}
 .product-card:active{transform:scale(.98)}
 .product-img{aspect-ratio:1;background:#f9fafb;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;overflow:hidden}
 .product-img .discount-tag{position:absolute;top:8px;right:8px;background:#ef4444;color:white;padding:2px 7px;border-radius:6px;font-size:11px;font-weight:600}
@@ -136,7 +138,7 @@ input:focus,select:focus,textarea:focus{border-color:#2563eb;background:white}
 <!-- Header -->
 <header class="app-header">
 <div class="header-top">
-<div class="header-logo">صفو</div>
+<div class="header-logo"><span>صفو</span><small>سوق الجملة</small></div>
 <div class="header-search">
 <i class="fa-solid fa-magnifying-glass"></i>
 <input type="text" placeholder="ابحث عن منتجات..." id="home-search" onkeyup="if(event.key==='Enter')goSearch()">
@@ -149,14 +151,15 @@ input:focus,select:focus,textarea:focus{border-color:#2563eb;background:white}
 </div>
 </div>
 </header>
+<div class="trust-strip" aria-label="مزايا سوق صفو"><div class="trust-item"><i class="fa-solid fa-shield-halved"></i><span>موردون موثوقون</span></div><div class="trust-item"><i class="fa-solid fa-tags"></i><span>أسعار جملة حقيقية</span></div><div class="trust-item"><i class="fa-solid fa-truck-fast"></i><span>توصيل داخل المدن</span></div><div class="trust-item"><i class="fa-solid fa-headset"></i><span>دعم سريع</span></div></div>
 
 <!-- Slider -->
 <section class="slider-section">
 <div class="slider-track" id="slider-track">
-<div class="slide"><div class="slide-bg" style="background:linear-gradient(135deg,#2563eb,#1e40af)"><div class="slide-content"><h2>عروض الجملة الحصرية</h2><p>خصومات تصل إلى 30% على المنتجات الغذائية والمشروبات</p><span class="slide-btn">تسوق الآن</span></div></div></div>
+<div class="slide"><div class="slide-bg" style="background:linear-gradient(135deg,#2563eb,#1e40af)"><div class="slide-content"><h2>عروض الجملة الحصرية</h2><p>خصومات تصل إلى 30% على المنتجات الغذائية والمشروبات</p><span class="slide-btn" onclick="showPage('offers')">اكتشف العروض</span></div></div></div>
 <div class="slide"><div class="slide-bg" style="background:linear-gradient(135deg,#059669,#047857)"><div class="slide-content"><h2>طلبيات المجموعات</h2><p>اطلب مع التجار الآخرين واحصل على سعر أقل</p><span class="slide-btn" onclick="showPage('group-orders')">انضم الآن</span></div></div></div>
-<div class="slide"><div class="slide-bg" style="background:linear-gradient(135deg,#dc2626,#b91c1c)"><div class="slide-content"><h2>توصيل مجاني</h2><p>للطلبات فوق ﷼ 10,000 داخل صنعاء وعدن</p><span class="slide-btn">Подробнее</span></div></div></div>
-<div class="slide"><div class="slide-bg" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)"><div class="slide-content"><h2>موردون موثوقون</h2><p>+500 مورد وشركة ومؤسسة معتمدة</p><span class="slide-btn">تصفح الموردين</span></div></div></div>
+<div class="slide"><div class="slide-bg" style="background:linear-gradient(135deg,#dc2626,#b91c1c)"><div class="slide-content"><h2>توصيل مجاني</h2><p>للطلبات فوق ﷼ 10,000 داخل صنعاء وعدن</p><span class="slide-btn" onclick="showPage('products')">تصفح المنتجات</span></div></div></div>
+<div class="slide"><div class="slide-bg" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)"><div class="slide-content"><h2>موردون موثوقون</h2><p>+500 مورد وشركة ومؤسسة معتمدة</p><span class="slide-btn" onclick="showPage('suppliers')">تصفح الموردين</span></div></div></div>
 </div>
 <div class="slide-dots" id="slider-dots"></div>
 </section>
@@ -510,7 +513,31 @@ return scored.slice(0,limit).map(s=>products.find(p=>p.id===s.id)).filter(Boolea
 }
 
 // ============ NAVIGATION ============
-function showPage(p){
+const CLEAN_ROUTE_BY_PAGE={
+ home:'/',products:'/products',categories:'/categories',suppliers:'/stores',
+ login:'/login',register:'/register',offers:'/offers','group-orders':'/group-orders',
+ profile:'/account',orders:'/account/orders',wishlist:'/account/favorites',
+ notifications:'/account/notifications',cart:'/account/cart',checkout:'/account/checkout'
+};
+function routeBase(){return location.hostname.endsWith('github.io')?'/safo-app':''}
+function cleanPath(){let p=location.pathname.replace(/\/+$/,'')||'/';const base=routeBase();if(base&&p.startsWith(base))p=p.slice(base.length)||'/';return p}
+function pageFromLocation(){
+const p=cleanPath();
+const productMatch=p.match(/^\/product\/(\d+)$/);
+if(productMatch){window.initialProductId=Number(productMatch[1]);return'product-detail'}
+if(p==='/'||p==='/market.html'||p==='/index.html')return'home';
+const aliases={'/products':'products','/categories':'categories','/stores':'suppliers','/login':'login','/register':'register','/offers':'offers','/group-orders':'group-orders','/account':'profile','/account/orders':'orders','/account/favorites':'wishlist','/account/notifications':'notifications','/account/cart':'cart','/account/checkout':'checkout'};
+return aliases[p]||'home';
+}
+function routeForPage(p){return routeBase()+(CLEAN_ROUTE_BY_PAGE[p]||'/')}
+function syncRoute(p,replace=false){
+if(!window.history||!window.history.pushState)return;
+const target=routeForPage(p);
+const finalTarget=p==='product-detail'&&window.currentProductId?routeBase()+'/product/'+window.currentProductId:target;
+if(location.pathname!==finalTarget){window.history[replace?'replaceState':'pushState']({page:p},'',finalTarget)}
+}
+function showPage(p,options={}){
+if(options.sync!==false)syncRoute(p);
 document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
 const el=document.getElementById('page-'+p);
 if(el)el.classList.add('active');
@@ -529,6 +556,7 @@ if(p==='offers')renderOffers();
 if(p==='notifications')renderNotifications();
 if(p==='checkout')renderCheckout();
 }
+window.addEventListener('popstate',()=>{const p=pageFromLocation();if(p==='product-detail'&&window.initialProductId)showProductDetail(window.initialProductId,{sync:false});else showPage(p,{sync:false})});
 
 // ============ SLIDER ============
 function initSlider(){
@@ -607,11 +635,12 @@ filterProducts();
 }
 
 // ============ PRODUCT DETAIL ============
-function showProductDetail(id){
+function showProductDetail(id,options={}){
 const p=products.find(x=>x.id===id);
 if(!p)return;
 trackView(id);
 trackClick('product',id);
+window.currentProductId=id;
 const s=suppliers.find(x=>x.id===p.supplier);
 const disc=discountPercent(p);
 const isWish=wishlist.includes(p.id);
@@ -632,7 +661,7 @@ ${[{name:'أحمد',r:5,c:'منتج ممتاز وأسعار مناسبة جدا�
 </div>`+
 `<div style="padding:16px;background:white;margin-top:8px;margin-bottom:20px"><h3 style="font-weight:700;margin-bottom:12px"><i class="fa-solid fa-layer-group" style="color:#2563eb;margin-left:6px"></i>منتجات مشابهة</h3><div class="products-grid">${getSimilarProducts(id,4).map(renderProductCard).join('')}</div></div>`;
 window.qty=1;
-showPage('product-detail');
+showPage('product-detail',options);
 }
 function changeQty(d){window.qty=Math.max(1,(window.qty||1)+d);const el=document.getElementById('qty-display');if(el)el.textContent=window.qty}
 function addToCartFromDetail(id){const p=products.find(x=>x.id===id);if(!p)return;const ex=cart.find(c=>c.id===id);if(ex)ex.qty+=(window.qty||1);else cart.push({id:p.id,name:p.name,price:p.price,icon:p.icon,bg:p.bg,unit:p.unit,qty:window.qty||1,supplier:p.supplier});updateCartBadge();showToast('تمت الإضافة للسلة')}
@@ -723,6 +752,10 @@ renderAll();
 await loadFromApi();
 renderAll();
 initSlider();
+const initialPage=pageFromLocation();
+if((cleanPath()==='/market.html'||cleanPath()==='/index.html')&&window.history)syncRoute('home',true);
+if(initialPage==='product-detail'&&window.initialProductId)showProductDetail(window.initialProductId,{sync:false});
+else showPage(initialPage,{sync:false});
 }
 init();
 </script>

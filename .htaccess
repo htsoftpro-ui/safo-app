@@ -1,5 +1,12 @@
-# Safo market static deployment: never serve an old HTML shell.
+# Safo market: one source, clean public routes, and no stale HTML shell.
 DirectoryIndex index.php index.html
+RewriteEngine On
+
+# Serve the single market shell for public clean URLs while keeping the URL visible.
+RewriteRule ^(products|categories|stores|login|register|offers|group-orders)/?$ /market.html [L]
+RewriteRule ^account(?:/(orders|favorites|notifications|cart|checkout))?/?$ /market.html [L]
+RewriteRule ^product/([0-9]+)/?$ /market.html [L,QSA]
+
 <IfModule mod_headers.c>
   <FilesMatch "\.(html?|json)$">
     Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
