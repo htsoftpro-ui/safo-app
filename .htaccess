@@ -3,8 +3,8 @@ DirectoryIndex index.php index.html
 RewriteEngine On
 
 # Serve the single market shell for public clean URLs while keeping the URL visible.
-RewriteRule ^(products|categories|stores|login|register|offers|group-orders)/?$ /market.html [L]
-RewriteRule ^account(?:/(orders|favorites|notifications|cart|checkout))?/?$ /market.html [L]
+RewriteRule ^(products|categories|stores|login|register|offers|group-orders|support|merchant|compare)/?$ /market.html [L]
+RewriteRule ^account(?:/(orders|favorites|notifications|cart|checkout|addresses|wallet))?/?$ /market.html [L]
 RewriteRule ^product/([0-9]+)/?$ /market.html [L,QSA]
 
 <IfModule mod_headers.c>

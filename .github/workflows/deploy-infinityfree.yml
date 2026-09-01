@@ -1,4 +1,4 @@
-name: Deploy Safo market to InfinityFree
+name: Deploy Safo market and role surfaces to InfinityFree
 
 on:
   workflow_dispatch:
@@ -21,14 +21,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Prepare market-only package
+      - name: Prepare market and role package
         shell: bash
         run: |
           set -euo pipefail
           rm -rf _infinityfree_market
-          mkdir -p _infinityfree_market
-          cp index.html market.html .htaccess _infinityfree_market/
+          mkdir -p _infinityfree_market/supplier
+          cp index.php index.html market.html .htaccess _infinityfree_market/
+          DEPLOY_TARGET=infinityfree pnpm --dir safo-supplier-dashboard install --frozen-lockfile=false
+          DEPLOY_TARGET=infinityfree pnpm --dir safo-supplier-dashboard build
+          cp -R safo-supplier-dashboard/dist/. _infinityfree_market/supplier/
 
-      - name: Upload market-only package over FTPS
+      - name: Upload market and role package over FTPS
         if: ${{ env.FTP_HOST != '' && env.FTP_USER != '' && env.FTP_PASSWORD != '' }}
         run: python3 scripts/deploy_ftp.py _infinityfree_market
+
+      - name: Explain missing deployment secrets
+        if: ${{ env.FTP_HOST == '' || env.FTP_USER == '' || env.FTP_PASSWORD == '' }}
+        run: echo 'InfinityFree deployment skipped because repository Actions secrets are not configured.'
