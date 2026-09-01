@@ -86,7 +86,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
 // ─── Supplier Routes ──────────────────────────────────────
 
 Route::prefix('v1/supplier')
-    ->middleware(['auth:sanctum', 'role:supplier'])
+    ->middleware(['auth:sanctum', 'supplier.access'])
     ->group(function () {
         // Supplier Dashboard
         Route::get('/dashboard', [SupplierDashboardController::class, 'index']);

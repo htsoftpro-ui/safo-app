@@ -92,6 +92,14 @@ class AuthController extends Controller
                     'message' => 'هذا الحساب لا يملك صلاحية الدخول كـ' . ($roleNames[$requestedRole] ?? $requestedRole),
                 ], 403);
             }
+
+            if ($requestedRole === 'supplier' && !$user->isSupplierVerified()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'حساب المورد قيد المراجعة. ستتمكن من دخول اللوحة بعد اعتماد الإدارة.',
+                    'code' => 'SUPPLIER_PENDING',
+                ], 403);
+            }
         }
 
         if ($request->has('fcm_token')) {

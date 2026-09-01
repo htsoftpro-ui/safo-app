@@ -536,7 +536,9 @@ const target=routeForPage(p);
 const finalTarget=p==='product-detail'&&window.currentProductId?routeBase()+'/product/'+window.currentProductId:target;
 if(location.pathname!==finalTarget){window.history[replace?'replaceState':'pushState']({page:p},'',finalTarget)}
 }
+const PROTECTED_MARKET_PAGES=new Set(['profile','orders','wishlist','notifications','checkout']);
 function showPage(p,options={}){
+if(PROTECTED_MARKET_PAGES.has(p)&&!isLoggedIn){p='login'}
 if(options.sync!==false)syncRoute(p);
 document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
 const el=document.getElementById('page-'+p);

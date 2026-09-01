@@ -10,6 +10,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => !!token.value)
   const isSupplier = computed(() => user.value?.type === 'supplier')
+  const isApprovedSupplier = computed(() => isSupplier.value && user.value?.is_verified === true)
 
   function init() {
     token.value = localStorage.getItem('token')
@@ -65,5 +66,5 @@ export const useAuthStore = defineStore('auth', () => {
 
   init()
 
-  return { user, token, loading, isAuthenticated, isSupplier, login, logout, fetchProfile }
+  return { user, token, loading, isAuthenticated, isSupplier, isApprovedSupplier, login, logout, fetchProfile }
 })

@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
+            'supplier.access' => \App\Http\Middleware\CheckSupplierAccess::class,
         ]);
         $middleware->statefulApi();
         // CORS is handled automatically by Illuminate\Http\Middleware\HandleCors

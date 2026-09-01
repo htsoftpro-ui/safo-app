@@ -35,7 +35,7 @@ router.beforeEach((to) => {
   if (to.meta.guest && auth.isAuthenticated) return '/'
 
   // Role guard: only supplier users can access supplier routes
-  if (to.meta.requiresAuth && auth.isAuthenticated && !auth.isSupplier) {
+  if (to.meta.requiresAuth && auth.isAuthenticated && !auth.isApprovedSupplier) {
     auth.logout()
     return '/login'
   }
