@@ -8,7 +8,6 @@ on:
       - 'index.html'
       - 'market.html'
       - '.htaccess'
-      - 'safo-customer-web/**'
       - 'safo-admin-dashboard/**'
       - 'safo-supplier-dashboard/**'
       - 'shaer-app/**'
@@ -61,7 +60,7 @@ jobs:
           rm -rf _site
           mkdir -p _site/admin _site/supplier _site/shaer-app
 
-          # Safo customer market is the canonical root and explicit market.html entry.
+          # market.html is the single canonical Safo market source.
           cp index.html _site/index.html
           cp market.html _site/market.html
           cp .htaccess _site/.htaccess

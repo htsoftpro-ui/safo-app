@@ -1,18 +1,17 @@
-name: Deploy Safo site to InfinityFree
+name: Deploy Safo market to InfinityFree
 
 on:
-  # Run manually after adding the INFINITYFREE_* Actions secrets.
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: infinityfree-production
+  group: infinityfree-market-production
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  deploy-market:
     runs-on: ubuntu-latest
     env:
       FTP_HOST: ${{ secrets.INFINITYFREE_FTP_HOST }}
@@ -22,39 +21,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: npm
-          cache-dependency-path: |
-            safo-admin-dashboard/package-lock.json
-            safo-supplier-dashboard/package-lock.json
-
-      - name: Install and build admin
-        working-directory: safo-admin-dashboard
-        run: npm ci && npm run build
-        env:
-          DEPLOY_TARGET: infinityfree
-
-      - name: Install and build supplier
-        working-directory: safo-supplier-dashboard
-        run: npm ci && npm run build
-        env:
-          DEPLOY_TARGET: infinityfree
-
-      - name: Assemble InfinityFree site
+      - name: Prepare market-only package
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf _infinityfree
-          mkdir -p _infinityfree/admin _infinityfree/supplier
-          cp index.html market.html .htaccess _infinityfree/
-          cp -r safo-admin-dashboard/dist/. _infinityfree/admin/
-          cp -r safo-supplier-dashboard/dist/. _infinityfree/supplier/
-          cp -r deploy/infinityfree/supplier/. _infinityfree/supplier/
-          touch _infinityfree/.nojekyll
+          rm -rf _infinityfree_market
+          mkdir -p _infinityfree_market
+          cp index.html market.html .htaccess _infinityfree_market/
 
-      - name: Upload site over FTPS
+      - name: Upload market-only package over FTPS
         if: ${{ env.FTP_HOST != '' && env.FTP_USER != '' && env.FTP_PASSWORD != '' }}
-        run: python3 scripts/deploy_ftp.py _infinityfree
+        run: python3 scripts/deploy_ftp.py _infinityfree_market

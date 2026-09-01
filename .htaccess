@@ -1,4 +1,4 @@
-# Safo static deployment: avoid stale HTML while preserving browser caching for assets.
+# Safo market static deployment: never serve an old HTML shell.
 <IfModule mod_headers.c>
   <FilesMatch "\.(html?|json)$">
     Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
@@ -6,7 +6,3 @@
     Header set Expires "0"
   </FilesMatch>
 </IfModule>
-
-RewriteEngine On
-# Pretty supplier URLs are redirected to the hash-router routes used by the Vue app.
-RewriteRule ^supplier/(login|orders|products|profile)(?:/.*)?/?$ /supplier/#/$1 [R=302,L,NE]
