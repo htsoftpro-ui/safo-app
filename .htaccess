@@ -1,4 +1,5 @@
 # Safo market static deployment: never serve an old HTML shell.
+DirectoryIndex index.php index.html
 <IfModule mod_headers.c>
   <FilesMatch "\.(html?|json)$">
     Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
