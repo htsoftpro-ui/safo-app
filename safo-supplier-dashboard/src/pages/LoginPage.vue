@@ -24,7 +24,7 @@ async function handleLogin() {
   <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="card w-full max-w-md">
       <div class="text-center mb-6">
-        <h1 class="text-2xl font-bold">🏪 سافو</h1>
+        <h1 class="text-2xl font-bold"><i class="fa-solid fa-store"></i> سافو</h1>
         <p class="text-gray-500 mt-1">تسجيل دخول المورد</p>
       </div>
 
@@ -35,7 +35,7 @@ async function handleLogin() {
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
           <label class="label">رقم الهاتف</label>
-          <input v-model="phone" type="text" class="input-field" placeholder="771000001" maxlength="9" required />
+          <input v-model="phone" type="text" class="input-field" placeholder="77xxxxxxx" maxlength="9" required />
         </div>
         <div>
           <label class="label">كلمة المرور</label>
@@ -46,9 +46,7 @@ async function handleLogin() {
         </button>
       </form>
 
-      <div class="mt-4 text-center text-sm text-gray-500">
-        <p>للتجربة: 771000001 / password123</p>
-      </div>
+
     </div>
   </div>
 </template>
